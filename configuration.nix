@@ -127,7 +127,6 @@
     libreoffice
     vscodium
     python3
-    julia
     texliveFull
     obsidian
     nix-output-monitor
