@@ -13,6 +13,8 @@
     obsidian
     ungoogled-chromium
     nix-output-monitor
+    nerd-fonts.fira-code
+  	nerd-fonts.jetbrains-mono
   ];
 
   programs.firefox.enable = true;
