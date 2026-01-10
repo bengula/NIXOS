@@ -1,9 +1,18 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 {
-  home-manager.users = {
-    bengula = import ../home/bengula.nix;
-    bebe    = import ../home/bebe.nix;
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+  ];
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+
+    users = {
+      bebe    = import ../home/bebe.nix;
+      bengula = import ../home/bengula.nix;
+    };
   };
 }
 

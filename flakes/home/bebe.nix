@@ -3,23 +3,27 @@
 {
   home.username = "bebe";
   home.homeDirectory = "/home/bebe";
-
   home.stateVersion = "25.11";
 
   programs.git = {
     enable = true;
-    userName  = "Bengula Jacob";
-    userEmail = "kbengula@student.maseno.ac.ke";
-
     settings = {
+      user = {
+        name  = "Bengula Jacob";
+        email = "kbengula@student.maseno.ac.ke";
+      };
       init.defaultBranch = "main";
       pull.rebase = true;
     };
   };
 
-  programs.gnome-shell.enable = true;
   programs.fish.enable = true;
-  programs.starship.enable = true;
+
+  programs.starship = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
   programs.neovim.enable = true;
 
   programs.direnv = {
@@ -29,9 +33,9 @@
 
   home.packages = with pkgs; [
     gnome-tweaks
+    gnome-extension-manager
     obsidian
     homebank
-    gnome-extension-manager
     fd
     ripgrep
     eza

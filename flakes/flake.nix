@@ -8,35 +8,21 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
-    let
-      system = "x86_64-linux";
-    in {
-      nixosConfigurations.Erudite = nixpkgs.lib.nixosSystem {
-        inherit system;
+  outputs = { self, nixpkgs, ... }@inputs:
+  let
+    system = "x86_64-linux";
+  in {
+    nixosConfigurations.Erudite = nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = { inherit inputs; };
 
-        # REQUIRED: pass inputs to modules
-        specialArgs = {
-          inherit inputs;
-        };
-
-        modules = [
-          ./configuration.nix
-
-          # Home Manager NixOS module
-          home-manager.nixosModules.home-manager
-
-          # Base HM settings
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-          }
-        ];
-      };
+      modules = [
+        ./configuration.nix
+        ./modules/home-manager.nix
+      ];
     };
+  };
 }
 
