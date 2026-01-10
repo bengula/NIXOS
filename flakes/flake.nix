@@ -1,5 +1,5 @@
 {
-  description = "Erudite NixOS system (flakes + HM)";
+  description = "Erudite NixOS system (flakes + Home Manager)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -16,13 +16,12 @@
   in {
     nixosConfigurations.Erudite = nixpkgs.lib.nixosSystem {
       inherit system;
+
       specialArgs = { inherit inputs; };
 
       modules = [
-        ./configuration.nix
-        ./modules/home-manager.nix
+        ./hosts/erudite
       ];
     };
   };
 }
-
