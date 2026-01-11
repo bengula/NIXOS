@@ -7,8 +7,9 @@
     libreoffice
     vscodium
     python3
+    packet
     texliveFull
-    ungoogled-chromium
+    google-chrome
     nix-output-monitor
   ];
 
