@@ -35,7 +35,6 @@
     gnome-tweaks
     telegram-desktop
     signal-desktop
-    whatsapp-for-mac
     gnome-extension-manager
     homebank
     fd
