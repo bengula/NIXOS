@@ -33,8 +33,10 @@
 
   home.packages = with pkgs; [
     gnome-tweaks
+    telegram-desktop
+    signal-desktop
+    whatsapp-for-mac
     gnome-extension-manager
-    obsidian
     homebank
     fd
     ripgrep

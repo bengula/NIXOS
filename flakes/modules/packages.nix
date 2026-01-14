@@ -10,6 +10,7 @@
     packet
     texliveFull
     google-chrome
+    obsidian
     nix-output-monitor
   ];
 
