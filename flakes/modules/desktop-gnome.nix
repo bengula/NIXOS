@@ -24,10 +24,10 @@
 
   security.rtkit.enable = true;
 
-  services.displayManager.autoLogin.enable = true;
-  services.displayManager.autoLogin.user = "bengula";
+  #services.displayManager.autoLogin.enable = true;
+  #services.displayManager.autoLogin.user = "bengula";
 
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
+  #systemd.services."getty@tty1".enable = false;
+  #systemd.services."autovt@tty1".enable = false;
 }
 
