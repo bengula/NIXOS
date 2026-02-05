@@ -11,7 +11,7 @@
 
     users = {
       bebe    = import ../home/bebe.nix;
-      lovely = import ../home/lovelty.nix;
+      lovelty = import ../home/lovelty.nix;
     };
   };
 }
