@@ -3,7 +3,7 @@
 {
   users.users.lovelty = {
     isNormalUser = true;
-    description = "Bengula Jacob";
+    description = "Winnie Jacob";
     extraGroups = [ "wheel" "networkmanager" ];
   };
 

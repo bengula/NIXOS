@@ -11,7 +11,7 @@
 
     users = {
       bebe    = import ../home/bebe.nix;
-      bengula = import ../home/bengula.nix;
+      bengula = import ../home/lovelty.nix;
     };
   };
 }
