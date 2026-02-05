@@ -7,6 +7,7 @@
     libreoffice
     vscodium
     python3
+    spotify
     packet
     texliveFull
     google-chrome

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  home.username = "bengula";
+  home.username = "Aggy";
   home.homeDirectory = "/home/bengula";
   home.stateVersion = "25.11";
  # This enables the 'home-manager' command in your shell
@@ -11,6 +11,7 @@
 
   home.packages = with pkgs; [
     thunderbird
+    
   ];
 }
 
