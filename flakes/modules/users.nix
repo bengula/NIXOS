@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  users.users.bengula = {
+  users.users.lovelty = {
     isNormalUser = true;
     description = "Bengula Jacob";
     extraGroups = [ "wheel" "networkmanager" ];
