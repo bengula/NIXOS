@@ -10,7 +10,7 @@
     useUserPackages = true;
 
     users = {
-      bebe    = import ../home/bebe.nix;
+      lovelty    = import ../home/bebe.nix;
       bengula = import ../home/lovelty.nix;
     };
   };
