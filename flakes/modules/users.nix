@@ -4,6 +4,7 @@
   users.users.lovelty = {
     isNormalUser = true;
     description = "Winnie Jacob";
+    home = "/home/lovelty";
     extraGroups = [ "wheel" "networkmanager" ];
   };
 
