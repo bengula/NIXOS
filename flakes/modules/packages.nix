@@ -40,7 +40,6 @@
 
   # DroidCam + ADB
   programs.droidcam.enable = true;
-  programs.adb.enable = true;
 
   # Services
   services.printing.enable = true;
