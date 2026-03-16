@@ -2,17 +2,32 @@
 
 {
   environment.systemPackages = with pkgs; [
+    # Core utilities
     wget
     git
+
+    # Productivity
     libreoffice
+    obsidian
+
+    # Development
     vscodium
     python3
-    spotify
-    packet
     texliveFull
+
+    # Browsers
     google-chrome
-    obsidian
+
+    # Media
+    spotify
+
+    # Networking / tools
+    packet
     nix-output-monitor
+
+    # Android / camera tools
+    android-tools   # adb command
+    v4l-utils       # camera testing utilities
   ];
 
   fonts.packages = with pkgs; [
@@ -23,8 +38,16 @@
   programs.firefox.enable = true;
   programs.fish.enable = true;
 
+  # DroidCam + ADB
+  programs.droidcam.enable = true;
+  programs.adb.enable = true;
+
+  # Services
   services.printing.enable = true;
   services.openssh.enable = true;
+
+  # Android USB permissions
+  services.udev.packages = [ pkgs.android-udev-rules ];
 }
 
 
