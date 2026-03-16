@@ -26,8 +26,9 @@
     nix-output-monitor
 
     # Android / camera tools
-    android-tools   # adb command
-    v4l-utils       # camera testing utilities
+    android-tools   # This now handles the ADB logic
+    v4l-utils       # Camera testing utilities
+    droidcam        # The desktop client UI
   ];
 
   fonts.packages = with pkgs; [
@@ -38,7 +39,8 @@
   programs.firefox.enable = true;
   programs.fish.enable = true;
 
-  # DroidCam + ADB
+  # DroidCam Drivers
+  # This enables the v4l2loopback kernel module automatically
   programs.droidcam.enable = true;
 
   # Services
@@ -46,7 +48,9 @@
   services.openssh.enable = true;
 
   # Android USB permissions
-  services.udev.packages = [ pkgs.android-udev-rules ];
+  # In NixOS 26.05, we don't need 'programs.adb'. 
+  # We just need the udev rules so the phone is recognized.
+  services.udev.packages = [ 
+    pkgs.android-udev-rules 
+  ];
 }
-
-
