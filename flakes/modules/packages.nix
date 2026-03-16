@@ -38,15 +38,10 @@
   programs.firefox.enable = true;
   programs.fish.enable = true;
 
-  # DroidCam support (installs client + kernel module)
+  # DroidCam support
   programs.droidcam.enable = true;
 
   # Services
   services.printing.enable = true;
   services.openssh.enable = true;
-
-  # Android USB permissions
-  services.udev.packages = [
-    pkgs.android-udev-rules
-  ];
 }
