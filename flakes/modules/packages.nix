@@ -20,6 +20,7 @@
 
     # Media
     spotify
+    teams-for-linux
 
     # Networking / tools
     packet
