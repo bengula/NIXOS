@@ -1,62 +1,48 @@
-# Erudite NixOS Configuration
+# NixOS Configuration
 
-This repository contains a modular NixOS configuration managed with Nix Flakes and Home Manager.
+This repository contains my NixOS configuration, managed using Nix Flakes and Home Manager. The configuration is modularized for better maintainability and scalability.
 
 ## Repository Structure
 
-The configuration is organized modularly to ensure maintainability and reproducibility:
+The configuration is organized under the `flakes/` directory:
 
-- **`flakes/`**: The root directory for the Nix flake configuration.
-  - **`flake.nix`**: Entry point for the system configuration. It defines the inputs (nixpkgs, home-manager) and the `Erudite` host output.
-  - **`hosts/`**: Host-specific configurations.
-    - **`erudite/`**: Configuration for the "Erudite" host.
-      - `default.nix`: Main host configuration, including hostname and state version.
-      - `hardware.nix`: Hardware-specific configuration, defining file systems and kernel modules.
-  - **`modules/`**: Shared system modules imported by the host configuration.
-    - `boot.nix`: Bootloader configuration using GRUB with OS prober enabled.
-    - `desktop-gnome.nix`: GNOME desktop environment setup, including GDM and PipeWire audio.
-    - `home-manager.nix`: Integration of Home Manager into the NixOS system.
-    - `locale.nix`: Localization settings, including timezone (`Africa/Nairobi`) and UTF-8 locale.
-    - `networking.nix`: NetworkManager configuration and custom DNS servers.
-    - `nix.nix`: Nix package manager settings, experimental features (flakes), and automatic garbage collection.
-    - `packages.nix`: System-wide package declarations and font configurations.
-    - `users.nix`: User account definitions for `lovelty` and `bebe`.
-  - **`home/`**: User-specific Home Manager configurations.
-    - `bebe.nix`: Detailed user environment for `bebe`, including Fish shell, Starship prompt, and user-specific packages.
-    - `lovelty.nix`: Environment for user `lovelty`.
+- **`flake.nix`**: The entry point for the system configuration, defining inputs (nixpkgs, home-manager) and system outputs.
+- **`hosts/`**: Contains host-specific configurations.
+    - **`erudite/`**: Configuration for the "Erudite" host, including hardware-specific settings and system-wide overrides.
+- **`modules/`**: Shared NixOS modules used across different hosts.
+    - `boot.nix`: GRUB bootloader configuration.
+    - `desktop-gnome.nix`: GNOME desktop environment and PipeWire audio settings.
+    - `locale.nix`: Timezone and localization settings.
+    - `networking.nix`: Hostname and NetworkManager configuration.
+    - `nix.nix`: Nix package manager settings (flakes, garbage collection, etc.).
+    - `packages.nix`: System-wide package installations and font configurations.
+    - `users.nix`: System-level user account definitions.
+    - `home-manager.nix`: Integration between NixOS and Home Manager.
+- **`home/`**: Home Manager configurations for individual users.
+    - `bebe.nix`: Personalized environment for the `bebe` user (Happy Home).
+    - `lovelty.nix`: Personalized environment for the `lovelty` user (Winnie Jacob).
 
-## System Highlights
+## Key Features
 
-- **Hostname**: `Erudite`
-- **Desktop Environment**: GNOME 4x
-- **Shell**: Fish (configured via Home Manager)
-- **Bootloader**: GRUB (legacy/BIOS support on `/dev/sda`)
+- **Desktop Environment**: GNOME with customized excluded packages for a cleaner experience.
+- **Audio**: PipeWire with ALSA and PulseAudio support.
+- **Shell**: Fish shell enabled system-wide.
+- **Nix Settings**:
+    - Experimental features (flakes and nix-command) enabled.
+    - Automatic store optimization.
+    - Scheduled garbage collection (older than 21 days).
 - **Users**:
-  - **lovelty** (Winnie Jacob)
-  - **bebe** (Happy Home)
-- **Key Applications**:
-  - **Development**: VS Codium, Python 3, TeX Live Full, Neovim
-  - **Productivity**: LibreOffice, Obsidian
-  - **Browsers**: Google Chrome, Firefox
-  - **Communication**: Microsoft Teams, Spotify, Discord, Telegram, Signal
+    - `bebe`: Includes development tools (VS Codium, Python, Git), productivity apps (Obsidian, LibreOffice), and communication tools (Discord, Telegram, Signal).
+    - `lovelty`: Includes essential tools like Thunderbird.
 
-## Usage
+## Applying the Configuration
 
-To apply this configuration, ensure you have Nix installed with flakes enabled, then run:
+To apply the configuration for the **Erudite** host, run the following command from the root of the repository:
 
 ```bash
 sudo nixos-rebuild switch --flake ./flakes#Erudite
 ```
 
-### Maintenance Commands
+## Hardware Configuration
 
-- **Update Flake Inputs**:
-  ```bash
-  nix flake update ./flakes
-  ```
-- **Check Flake Validity**:
-  ```bash
-  nix flake check ./flakes
-  ```
-- **Garbage Collection**:
-  System garbage collection is automated to run daily at 03:15, removing generations older than 21 days.
+Hardware-specific settings are located in `flakes/hosts/erudite/hardware.nix`. This file is typically generated by `nixos-generate-config` and should be updated cautiously.
