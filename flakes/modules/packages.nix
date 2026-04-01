@@ -25,6 +25,7 @@
     # Networking / tools
     packet
     nix-output-monitor
+    blueman
 
     # Android / camera tools
     android-tools
