@@ -13,6 +13,7 @@
     geary
   ];
 
+  # Audio (PipeWire replaces PulseAudio)
   services.pulseaudio.enable = false;
 
   services.pipewire = {
@@ -22,12 +23,9 @@
     pulse.enable = true;
   };
 
+  #PAM is still important
+  security.pam.services.login.enable = true;
+  security.pam.services.gdm.enable = true;
+
   security.rtkit.enable = true;
-
-  #services.displayManager.autoLogin.enable = true;
-  #services.displayManager.autoLogin.user = "bengula";
-
-  #systemd.services."getty@tty1".enable = false;
-  #systemd.services."autovt@tty1".enable = false;
 }
-
