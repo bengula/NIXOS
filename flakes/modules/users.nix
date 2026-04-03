@@ -13,4 +13,3 @@
     extraGroups = [ "wheel" "networkmanager" "video" "adbusers" "bluetooth"];
   };
 }
-
