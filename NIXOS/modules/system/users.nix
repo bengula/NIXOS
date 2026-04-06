@@ -7,9 +7,9 @@
     extraGroups = [ "wheel" "networkmanager" "video" "adbusers" "bluetooth"];
   };
 
-  users.users.bengula = {
+  users.users.bebe = {
     isNormalUser = true;
-    description = "Bengula Jacob";
+    description = "Happy Home";
     extraGroups = [ "wheel" "networkmanager" "video" "adbusers" "bluetooth"];
   };
 }
