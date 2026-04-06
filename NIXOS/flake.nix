@@ -20,7 +20,7 @@
       specialArgs = { inherit inputs; };
 
       modules = [
-        ./hosts/erudite
+        ./hosts/erudite/configuration.nix
       ];
     };
   };

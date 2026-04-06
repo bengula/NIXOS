@@ -1,0 +1,5 @@
+{ config, pkgs, ... }:
+
+{
+  # Nginx configuration
+}

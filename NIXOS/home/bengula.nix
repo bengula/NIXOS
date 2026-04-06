@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  home.username = "bebe";
-  home.homeDirectory = "/home/bebe";
+  home.username = "bengula";
+  home.homeDirectory = "/home/bengula";
   home.stateVersion = "25.11";
   
  # This enables the 'home-manager' command in your shell

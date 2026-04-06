@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ./hardware.nix
-    ../../modules
+    ./hardware-configuration.nix
+    ../../modules/system
   ];
 
   networking.hostName = "Erudite";

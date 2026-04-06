@@ -1,0 +1,5 @@
+{ config, pkgs, ... }:
+
+{
+  # Python configuration
+}
