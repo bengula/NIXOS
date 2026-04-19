@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  users.users.lovelty = {
+  users.users.pri = {
     isNormalUser = true;
-    description = "Winnie Jacob";
+    description = "Princess";
     extraGroups = [ "wheel" "networkmanager" "video" "adbusers" "bluetooth"];
   };
 

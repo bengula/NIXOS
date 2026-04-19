@@ -35,10 +35,6 @@
   };
 
   home.packages = with pkgs; [
-    gnome-tweaks
-    telegram-desktop
-    signal-desktop
-    discord
     gnome-extension-manager
     homebank
     fd

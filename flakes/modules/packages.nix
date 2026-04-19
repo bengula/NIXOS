@@ -5,6 +5,7 @@
     # Core utilities
     wget
     git
+    gnome-tweaks
 
     # Productivity
     libreoffice
@@ -21,6 +22,9 @@
     # Media
     spotify
     teams-for-linux
+    telegram-desktop
+    signal-desktop
+    discord
 
     # Networking / tools
     packet
