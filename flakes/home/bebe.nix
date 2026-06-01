@@ -135,7 +135,8 @@
         "$mod SHIFT, 5, movetoworkspace, 5"
 
         # Screenshot
-        ", Print, exec, grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%F_%T).png"
+        ", Print,       exec, grim ~/Pictures/screenshot-$(date +%F_%T).png"
+        "$mod, Print,   exec, grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%F_%T).png"
 
         # Audio
         ", XF86AudioRaiseVolume,  exec, pamixer -i 5"
