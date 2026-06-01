@@ -2,6 +2,7 @@
   imports = [
     ./boot.nix
     ./desktop-gnome.nix
+    ./desktop-hyprland.nix
     ./locale.nix
     ./networking.nix
     ./bluetooth.nix
