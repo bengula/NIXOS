@@ -6,38 +6,113 @@ This repository contains my NixOS configuration, managed using Nix Flakes and Ho
 
 The configuration is organized under the `flakes/` directory:
 
-- **`flake.nix`**: The entry point for the system configuration, defining inputs (nixpkgs, home-manager) and system outputs.
-- **`hosts/`**: Contains host-specific configurations.
-    - **`erudite/`**: Configuration for the "Erudite" host, including hardware-specific settings and system-wide overrides.
-- **`modules/`**: Shared NixOS modules used across different hosts.
-    - `boot.nix`: GRUB bootloader configuration.
-    - `desktop-gnome.nix`: GNOME desktop environment and PipeWire audio settings.
-    - `locale.nix`: Timezone and localization settings.
-    - `networking.nix`: Hostname and NetworkManager configuration.
-    - `nix.nix`: Nix package manager settings (flakes, garbage collection, etc.).
-    - `packages.nix`: System-wide package installations and font configurations.
-    - `users.nix`: System-level user account definitions.
-    - `home-manager.nix`: Integration between NixOS and Home Manager.
-- **`home/`**: Home Manager configurations for individual users.
-    - `bebe.nix`: Personalized environment for the `bebe` user (Happy Home).
-    - `lovelty.nix`: Personalized environment for the `lovelty` user (Winnie Jacob).
+- **`flake.nix`**: Entry point defining inputs (nixpkgs unstable, home-manager) and system outputs.
+- **`hosts/`**: Host-specific configurations.
+  - **`erudite/`**: Configuration for the "Erudite" host, including hardware settings and system-wide overrides.
+- **`modules/`**: Shared NixOS modules.
+  - `boot.nix`: GRUB bootloader configuration.
+  - `desktop-gnome.nix`: GNOME desktop environment and PipeWire audio.
+  - `desktop-hyprland.nix`: Hyprland Wayland compositor and companion tools.
+  - `locale.nix`: Timezone and localization settings.
+  - `networking.nix`: Hostname and NetworkManager configuration.
+  - `bluetooth.nix`: Bluetooth support.
+  - `nix.nix`: Nix package manager settings (flakes, garbage collection, etc.).
+  - `packages.nix`: System-wide packages and fonts.
+  - `users.nix`: System-level user account definitions.
+  - `home-manager.nix`: Integration between NixOS and Home Manager.
+- **`home/`**: Home Manager configurations per user.
+  - `bebe.nix`: Environment for the `bebe` user — includes Hyprland config, dev tools, shell, and editor setup.
+  - `pri.nix`: Environment for the `pri` user.
 
 ## Key Features
 
-- **Desktop Environment**: GNOME with customized excluded packages for a cleaner experience.
-- **Audio**: PipeWire with ALSA and PulseAudio support.
-- **Shell**: Fish shell enabled system-wide.
-- **Nix Settings**:
-    - Experimental features (flakes and nix-command) enabled.
-    - Automatic store optimization.
-    - Scheduled garbage collection (older than 21 days).
-- **Users**:
-    - `bebe`: Includes development tools (VS Codium, Python, Git), productivity apps (Obsidian, LibreOffice), and communication tools (Discord, Telegram, Signal).
-    - `lovelty`: Includes essential tools like Thunderbird.
+### Desktop
+- **GNOME** with GDM and excluded bloat packages (epiphany, gnome-tour, gnome-music, geary).
+- **Hyprland** Wayland compositor — available alongside GNOME at the GDM login screen.
+
+### Audio & System
+- **PipeWire** with ALSA and PulseAudio compatibility.
+- **Bluetooth** support via blueman.
+- **Printing** via CUPS.
+- **SSH** server enabled.
+- **DroidCam** for Android camera as webcam.
+
+### Shell & Development
+- **Fish** shell enabled system-wide.
+- **Starship** prompt with Fish integration.
+- **Neovim** editor.
+- **direnv** + nix-direnv for per-project environments.
+- **VS Codium**, Python 3, TeX Live (full), Git.
+
+### Packages (bebe)
+- Productivity: Obsidian, LibreOffice, HomeBank
+- Communication: Discord, Telegram, Signal, Teams for Linux
+- Media: Spotify
+- Browsers: Firefox, Google Chrome
+- CLI tools: fd, ripgrep, eza, nix-output-monitor
+- Fonts: FiraCode Nerd Font, JetBrains Mono Nerd Font
+
+### Nix Settings
+- Flakes and nix-command experimental features enabled.
+- Automatic store optimization.
+- Garbage collection scheduled (packages older than 21 days).
+
+---
+
+## Hyprland Keybindings
+
+> SUPER = Windows / Meta key
+
+### Applications
+
+| Keybinding | Action |
+|---|---|
+| `SUPER + Return` | Open terminal (kitty) |
+| `SUPER + D` | App launcher (wofi) |
+| `SUPER + E` | File manager (nautilus) |
+| `SUPER + Q` | Close active window |
+| `SUPER + M` | Exit Hyprland |
+| `SUPER + V` | Toggle floating |
+
+### Window Management
+
+| Keybinding | Action |
+|---|---|
+| `SUPER + P` | Pseudotile toggle |
+| `SUPER + J` | Toggle split direction |
+| `SUPER + Arrow keys` | Move focus |
+| `SUPER + Mouse drag` | Move window |
+| `SUPER + Right-click drag` | Resize window |
+
+### Workspaces
+
+| Keybinding | Action |
+|---|---|
+| `SUPER + 1-5` | Switch to workspace 1–5 |
+| `SUPER + SHIFT + 1-5` | Move window to workspace 1–5 |
+
+### Screenshots
+
+| Keybinding | Action |
+|---|---|
+| `PrintScreen` | Full screenshot → `~/Pictures/` |
+| `SUPER + PrintScreen` | Region select screenshot → `~/Pictures/` |
+
+### Media Keys
+
+| Keybinding | Action |
+|---|---|
+| `XF86AudioRaiseVolume` | Volume +5% |
+| `XF86AudioLowerVolume` | Volume -5% |
+| `XF86AudioMute` | Toggle mute |
+| `XF86MonBrightnessUp` | Brightness +10% |
+| `XF86MonBrightnessDown` | Brightness -10% |
+
+---
 
 ## Applying the Configuration
 
-To apply the configuration for the **Erudite** host, run the following command from the root of the repository:
+From the repository root:
 
 ```bash
 sudo nixos-rebuild switch --flake ./flakes#Erudite
@@ -45,4 +120,4 @@ sudo nixos-rebuild switch --flake ./flakes#Erudite
 
 ## Hardware Configuration
 
-Hardware-specific settings are located in `flakes/hosts/erudite/hardware.nix`. This file is typically generated by `nixos-generate-config` and should be updated cautiously.
+Hardware-specific settings are in `flakes/hosts/erudite/hardware.nix`. Generated by `nixos-generate-config` — update cautiously.
