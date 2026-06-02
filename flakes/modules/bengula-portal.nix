@@ -15,10 +15,12 @@
 let
   cfg = config.services.bengulaPortal;
 
-  # Build the portal from the source flake input. npmDepsHash lives in the
-  # package file and must be filled in on first build (see comments there).
+  # Build the portal from the source flake input. The maintained site lives in
+  # the repo's `Bengula-Jacob/` subdirectory (the repo root holds a separate,
+  # stale copy), so we build from that subpath. npmDepsHash lives in the package
+  # file and must be filled in on first build (see comments there).
   portal = pkgs.callPackage ../pkgs/bengula-portal.nix {
-    src = inputs.bengula-portal-src;
+    src = inputs.bengula-portal-src + "/Bengula-Jacob";
   };
 in
 {
