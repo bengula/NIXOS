@@ -10,6 +10,7 @@
     ./packages.nix
     ./users.nix
     ./home-manager.nix
+    ./bengula-portal.nix
   ];
 }
 

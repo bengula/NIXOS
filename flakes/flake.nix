@@ -8,6 +8,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Source for the Bengula Inc portal (built reproducibly via buildNpmPackage
+    # in modules/bengula-portal.nix). `flake = false` => plain source tree.
+    bengula-portal-src = {
+      url = "github:bengula/BengulaLive";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, ... }@inputs:
