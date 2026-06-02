@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "bengula-portal-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780419483,
+        "narHash": "sha256-FqoMnbOSLVkClmXpE8N6pf334CU3Cyi27jsGDijQv+I=",
+        "owner": "bengula",
+        "repo": "BengulaLive",
+        "rev": "350d9a781d70902a95d99883a630e6031428f576",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bengula",
+        "repo": "BengulaLive",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -38,6 +54,7 @@
     },
     "root": {
       "inputs": {
+        "bengula-portal-src": "bengula-portal-src",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"
       }
