@@ -10,6 +10,7 @@
     waybar
     wofi
     hyprpaper
+    hyprlock
     dunst
     wl-clipboard
     grim

@@ -6,6 +6,7 @@
     wget
     git
     gnome-tweaks
+    grok-cli
 
     # Productivity
     libreoffice

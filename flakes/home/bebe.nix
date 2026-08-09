@@ -40,7 +40,84 @@
     fd
     ripgrep
     eza
+    # Cheatsheet: Super+/ opens this in wofi
+    (writeShellScriptBin "hypr-keybinds" ''
+      set -euo pipefail
+      mkdir -p "$HOME/Pictures"
+      ${pkgs.wofi}/bin/wofi --dmenu --insensitive --prompt "Hyprland shortcuts" \
+        --width 720 --height 520 --cache-file /dev/null <<'EOF'
+      Super + /                 Show this shortcuts list
+      Super + Return            Open terminal (GNOME Console)
+      Super + D                 App launcher (wofi)
+      Super + E                 File manager (Nautilus)
+      Super + Q                 Close focused window
+      Super + F                 Toggle fullscreen
+      Super + V                 Toggle floating
+      Super + P                 Pseudo-tile
+      Super + T                 Toggle split direction
+      Super + Escape            Lock screen
+      Super + R                 Reload Hyprland config
+      Super + M                 Exit Hyprland
+      Super + Tab               Next workspace
+      Super + Shift + Tab       Previous workspace
+      Super + h/j/k/l           Focus left/down/up/right
+      Super + Arrows            Focus in that direction
+      Super + Shift + h/j/k/l   Move window left/down/up/right
+      Super + Shift + Arrows    Move window in that direction
+      Super + Ctrl + h/j/k/l    Resize window
+      Super + 1…0               Switch to workspace 1–10
+      Super + Shift + 1…0       Move window to workspace 1–10
+      Super + S                 Toggle special (scratch) workspace
+      Super + Shift + S         Move window to special workspace
+      Super + mouse LMB drag    Move window
+      Super + mouse RMB drag    Resize window
+      Print                     Screenshot full screen → ~/Pictures
+      Super + Print             Screenshot region → ~/Pictures
+      Volume / mute keys        Raise, lower, mute audio
+      Brightness keys           Raise / lower brightness
+      EOF
+    '')
   ];
+
+  # Minimal lock screen (Super + Escape)
+  programs.hyprlock = {
+    enable = true;
+    settings = {
+      general = {
+        disable_loading_bar = true;
+        hide_cursor = true;
+      };
+      background = [
+        {
+          monitor = "";
+          path = "screenshot";
+          blur_passes = 3;
+          blur_size = 8;
+        }
+      ];
+      input-field = [
+        {
+          monitor = "";
+          size = "280, 48";
+          position = "0, -40";
+          halign = "center";
+          valign = "center";
+          placeholder_text = "Password…";
+          fade_on_empty = false;
+        }
+      ];
+      label = [
+        {
+          monitor = "";
+          text = "$TIME";
+          font_size = 64;
+          position = "0, 80";
+          halign = "center";
+          valign = "center";
+        }
+      ];
+    };
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -53,6 +130,7 @@
         "waybar"
         "hyprpaper"
         "dunst"
+        "mkdir -p ~/Pictures"
       ];
 
       # Environment
@@ -105,27 +183,61 @@
       # Keybindings — SUPER is the Windows/Meta key
       "$mod" = "SUPER";
       bind = [
-        "$mod, Return, exec, kitty"
-        "$mod, Q, killactive"
-        "$mod, M, exit"
-        "$mod, E, exec, nautilus"
-        "$mod, V, togglefloating"
+        # Apps & session
+        "$mod, Return, exec, kgx"
         "$mod, D, exec, wofi --show drun"
+        "$mod, E, exec, nautilus"
+        "$mod, Q, killactive"
+        "$mod, F, fullscreen"
+        "$mod, V, togglefloating"
         "$mod, P, pseudo"
-        "$mod, J, togglesplit"
+        "$mod, T, togglesplit"
+        "$mod, Escape, exec, hyprlock"
+        "$mod, R, exec, hyprctl reload"
+        "$mod, M, exit"
+        "$mod, slash, exec, hypr-keybinds"
 
-        # Move focus
+        # Focus — arrows + vim keys
         "$mod, left,  movefocus, l"
         "$mod, right, movefocus, r"
         "$mod, up,    movefocus, u"
         "$mod, down,  movefocus, d"
+        "$mod, h, movefocus, l"
+        "$mod, j, movefocus, d"
+        "$mod, k, movefocus, u"
+        "$mod, l, movefocus, r"
 
-        # Switch workspaces
+        # Move windows
+        "$mod SHIFT, left,  movewindow, l"
+        "$mod SHIFT, right, movewindow, r"
+        "$mod SHIFT, up,    movewindow, u"
+        "$mod SHIFT, down,  movewindow, d"
+        "$mod SHIFT, h, movewindow, l"
+        "$mod SHIFT, j, movewindow, d"
+        "$mod SHIFT, k, movewindow, u"
+        "$mod SHIFT, l, movewindow, r"
+
+        # Resize windows
+        "$mod CTRL, left,  resizeactive, -40 0"
+        "$mod CTRL, right, resizeactive, 40 0"
+        "$mod CTRL, up,    resizeactive, 0 -40"
+        "$mod CTRL, down,  resizeactive, 0 40"
+        "$mod CTRL, h, resizeactive, -40 0"
+        "$mod CTRL, j, resizeactive, 0 40"
+        "$mod CTRL, k, resizeactive, 0 -40"
+        "$mod CTRL, l, resizeactive, 40 0"
+
+        # Workspaces 1–10
         "$mod, 1, workspace, 1"
         "$mod, 2, workspace, 2"
         "$mod, 3, workspace, 3"
         "$mod, 4, workspace, 4"
         "$mod, 5, workspace, 5"
+        "$mod, 6, workspace, 6"
+        "$mod, 7, workspace, 7"
+        "$mod, 8, workspace, 8"
+        "$mod, 9, workspace, 9"
+        "$mod, 0, workspace, 10"
 
         # Move window to workspace
         "$mod SHIFT, 1, movetoworkspace, 1"
@@ -133,12 +245,23 @@
         "$mod SHIFT, 3, movetoworkspace, 3"
         "$mod SHIFT, 4, movetoworkspace, 4"
         "$mod SHIFT, 5, movetoworkspace, 5"
+        "$mod SHIFT, 6, movetoworkspace, 6"
+        "$mod SHIFT, 7, movetoworkspace, 7"
+        "$mod SHIFT, 8, movetoworkspace, 8"
+        "$mod SHIFT, 9, movetoworkspace, 9"
+        "$mod SHIFT, 0, movetoworkspace, 10"
 
-        # Screenshot
-        ", Print,       exec, grim ~/Pictures/screenshot-$(date +%F_%T).png"
-        "$mod, Print,   exec, grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%F_%T).png"
+        # Cycle workspaces + scratchpad
+        "$mod, Tab, workspace, e+1"
+        "$mod SHIFT, Tab, workspace, e-1"
+        "$mod, S, togglespecialworkspace, magic"
+        "$mod SHIFT, S, movetoworkspace, special:magic"
 
-        # Audio
+        # Screenshots
+        ", Print, exec, mkdir -p ~/Pictures && grim ~/Pictures/screenshot-$(date +%F_%T).png"
+        "$mod, Print, exec, mkdir -p ~/Pictures && grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%F_%T).png"
+
+        # Media keys
         ", XF86AudioRaiseVolume,  exec, pamixer -i 5"
         ", XF86AudioLowerVolume,  exec, pamixer -d 5"
         ", XF86AudioMute,         exec, pamixer -t"
