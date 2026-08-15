@@ -9,9 +9,19 @@
         gnome-tweaks
         libnotify # notify-send — used by the Hyprland mode hints
 
+<<<<<<< HEAD
         # Productivity
         libreoffice
         obsidian
+||||||| parent of 0ca3ed6 (added thunderbird)
+    # Productivity
+    libreoffice
+    obsidian
+
+    # Productivity
+    libreoffice
+    obsidian
+    thunderbird
 
         # Development
         vscodium
