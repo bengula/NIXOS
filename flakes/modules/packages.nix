@@ -22,6 +22,7 @@
     libreoffice
     obsidian
     thunderbird
+    codex
 
         # Development
         vscodium
