@@ -9,11 +9,11 @@
         gnome-tweaks
         libnotify # notify-send — used by the Hyprland mode hints
 
-<<<<<<< HEAD
+
         # Productivity
         libreoffice
         obsidian
-||||||| parent of 0ca3ed6 (added thunderbird)
+
     # Productivity
     libreoffice
     obsidian
@@ -29,6 +29,18 @@
         python3
         texliveFull
         nodejs_20 # Node.js 20 LTS — bundles `npm` (matches the portal's shell.nix)
+
+    # Development
+    vscodium
+    python3
+    texliveFull
+    nodejs_20      # Node.js 20 LTS — bundles `npm` (matches the Bengula portal's shell.nix)
+
+    # Development
+    vscodium
+    python3
+    texliveFull
+    nodejs_20      # Node.js 20 LTS — bundles `npm` (matches the Bengula portal's shell.nix)
 
         # Browsers
         google-chrome

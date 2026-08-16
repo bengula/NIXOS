@@ -16,6 +16,26 @@
         "type": "github"
       }
     },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787559586,
+        "narHash": "sha256-onL0VLf9vPllmT0H/OlURIU5r5t5WIEl7t4tVNKT0Nw=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "9d0d87172c374f89da73c1cfe6d81ae62feac1f1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -36,6 +56,21 @@
         "type": "github"
       }
     },
+    "import-tree": {
+      "locked": {
+        "lastModified": 1784254960,
+        "narHash": "sha256-iI88R3wHz8wTKQb5orvpc51L/Xr64AJyxid/0MKa/b8=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "4ebb10ae17d5f1ad366e7aef5b92cb8eecf24f69",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1767640445,
@@ -52,11 +87,30 @@
         "type": "github"
       }
     },
+    "orbit-wallpaper-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787966074,
+        "narHash": "sha256-2YSUtlWsFyK8BlggsNWDBSA0v8xTMxvScbTGsOOn2aI=",
+        "owner": "CleanShirtUK",
+        "repo": "orbit-wallpaper-engine",
+        "rev": "dfbf5e24a42b6bf2af586b8286e2648dbb2b7420",
+        "type": "github"
+      },
+      "original": {
+        "owner": "CleanShirtUK",
+        "repo": "orbit-wallpaper-engine",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "bengula-portal-src": "bengula-portal-src",
+        "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "import-tree": "import-tree",
+        "nixpkgs": "nixpkgs",
+        "orbit-wallpaper-src": "orbit-wallpaper-src"
       }
     }
   },

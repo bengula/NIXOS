@@ -85,13 +85,14 @@
 
           # Blur the bar, the launcher and notifications too, so the whole
           # session reads as one translucent surface.
+          # Syntax note: since Hyprland 0.52 the effect needs an explicit value
+          # (`blur on`, not bare `blur`), `ignorealpha` gained an underscore, and
+          # the namespace is matched with `match:namespace` rather than sitting
+          # as a bare trailing argument. Multiple effects can share one rule.
           layerrule = [
-            "blur, waybar"
-            "ignorealpha 0.3, waybar"
-            "blur, wofi"
-            "ignorealpha 0.3, wofi"
-            "blur, notifications"
-            "ignorealpha 0.3, notifications"
+            "blur on, ignore_alpha 0.3, match:namespace waybar"
+            "blur on, ignore_alpha 0.3, match:namespace wofi"
+            "blur on, ignore_alpha 0.3, match:namespace notifications"
           ];
 
           # ── Animations ───────────────────────────────────────────────────
@@ -133,8 +134,9 @@
             ];
           };
 
+          # `pseudotile` was removed in 0.55 (it had stopped doing anything).
+          # The `pseudo` dispatcher and window rule are unaffected.
           dwindle = {
-            pseudotile = true;
             preserve_split = true;
           };
 
