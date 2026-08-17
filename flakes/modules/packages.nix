@@ -9,41 +9,21 @@
         gnome-tweaks
         libnotify # notify-send — used by the Hyprland mode hints
 
-
         # Productivity
         libreoffice
         obsidian
-
-    # Productivity
-    libreoffice
-    obsidian
-
-    # Productivity
-    libreoffice
-    obsidian
-    thunderbird
-    codex
+        thunderbird
+        codex
 
         # Development
         vscodium
         python3
         texliveFull
-        nodejs_20 # Node.js 20 LTS — bundles `npm` (matches the portal's shell.nix)
-
-    # Development
-    vscodium
-    python3
-    texliveFull
-    nodejs_20      # Node.js 20 LTS — bundles `npm` (matches the Bengula portal's shell.nix)
-
-    # Development
-    vscodium
-    python3
-    texliveFull
-    nodejs_20      # Node.js 20 LTS — bundles `npm` (matches the Bengula portal's shell.nix)
+        nodejs # Node.js Active LTS (or `nodejs_22` / `nodejs_24`)
 
         # Browsers
         google-chrome
+        antigravity
 
         # Media
         spotify
@@ -60,6 +40,7 @@
         # Android / camera tools
         android-tools
         v4l-utils
+        gnomeExtensions.gsconnect
       ];
 
       fonts.packages = with pkgs; [

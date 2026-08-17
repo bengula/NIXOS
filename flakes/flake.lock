@@ -3,16 +3,36 @@
     "bengula-portal-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1780419483,
-        "narHash": "sha256-FqoMnbOSLVkClmXpE8N6pf334CU3Cyi27jsGDijQv+I=",
+        "lastModified": 1787726357,
+        "narHash": "sha256-4h8SbR+lN79aFY/8eNMZ1fhK/roWRxqxJ5DGxa1eeaA=",
         "owner": "bengula",
         "repo": "BengulaLive",
-        "rev": "350d9a781d70902a95d99883a630e6031428f576",
+        "rev": "4b90f07b452d62de609616e0aac89fdb2a7afe35",
         "type": "github"
       },
       "original": {
         "owner": "bengula",
         "repo": "BengulaLive",
+        "type": "github"
+      }
+    },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787559586,
+        "narHash": "sha256-onL0VLf9vPllmT0H/OlURIU5r5t5WIEl7t4tVNKT0Nw=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "9d0d87172c374f89da73c1cfe6d81ae62feac1f1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
         "type": "github"
       }
     },
@@ -23,11 +43,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767733722,
-        "narHash": "sha256-R0CZ0BiOaUqFLMDZKv7+I0sdeyzjlc40QmRR7zSwvkM=",
+        "lastModified": 1787750582,
+        "narHash": "sha256-FfIAV44k33i+IjC1+new2KyjyVGUzGtV89VHVP4eK1U=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6e94d8157c941d4dd6fc39866592699043b73668",
+        "rev": "0a364342a66bcecfc8a00d2fc38c6c29eee7bc5e",
         "type": "github"
       },
       "original": {
@@ -36,13 +56,28 @@
         "type": "github"
       }
     },
+    "import-tree": {
+      "locked": {
+        "lastModified": 1784254960,
+        "narHash": "sha256-iI88R3wHz8wTKQb5orvpc51L/Xr64AJyxid/0MKa/b8=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "4ebb10ae17d5f1ad366e7aef5b92cb8eecf24f69",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1767640445,
-        "narHash": "sha256-UWYqmD7JFBEDBHWYcqE6s6c77pWdcU/i+bwD6XxMb8A=",
+        "lastModified": 1787498568,
+        "narHash": "sha256-9i/VTdusq/+NM/tz+J1Re+ojkMB8MBf0QshnYfzHz30=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "9f0c42f8bc7151b8e7e5840fb3bd454ad850d8c5",
+        "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
         "type": "github"
       },
       "original": {
@@ -52,11 +87,30 @@
         "type": "github"
       }
     },
+    "orbit-wallpaper-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787164423,
+        "narHash": "sha256-nAaIuvogzmW53WMnzrBjbMktUe39mQlzolzDKJMx1/8=",
+        "owner": "CleanShirtUK",
+        "repo": "orbit-wallpaper-engine",
+        "rev": "66f67d36224e397f5e0e9796771036216bfa6d02",
+        "type": "github"
+      },
+      "original": {
+        "owner": "CleanShirtUK",
+        "repo": "orbit-wallpaper-engine",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "bengula-portal-src": "bengula-portal-src",
+        "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "import-tree": "import-tree",
+        "nixpkgs": "nixpkgs",
+        "orbit-wallpaper-src": "orbit-wallpaper-src"
       }
     }
   },
