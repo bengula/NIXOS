@@ -4,6 +4,11 @@
   # GNOME Terminal stores profiles in dconf rather than a conventional config
   # file.  Use a fixed profile ID so this remains reproducible across rebuilds.
   dconf.settings = {
+    "org/gnome/desktop/default-applications/terminal" = {
+      exec = "gnome-terminal";
+      exec-arg = "";
+    };
+
     "org/gnome/terminal/legacy/profiles:" = {
       default = "b1dcc9dd-5262-4d8d-a863-c897e6d979b9";
       list = [ "b1dcc9dd-5262-4d8d-a863-c897e6d979b9" ];
@@ -20,8 +25,9 @@
         "#414868" "#f7768e" "#9ece6a" "#e0af68"
         "#7aa2f7" "#bb9af7" "#7dcfff" "#c0caf5"
       ];
+      use-theme-transparency = false;
       use-transparent-background = true;
-      background-transparency-percent = 18;
+      background-transparency-percent = 30;
     };
   };
 }

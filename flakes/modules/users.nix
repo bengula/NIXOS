@@ -10,6 +10,7 @@
   users.users.bebe = {
     isNormalUser = true;
     description = "Happy Home";
+    shell = pkgs.fish;
     extraGroups = [ "wheel" "networkmanager" "video" "adbusers" "bluetooth"];
   };
 }

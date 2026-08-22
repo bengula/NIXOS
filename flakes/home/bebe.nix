@@ -186,7 +186,7 @@
       "$mod" = "SUPER";
       bind = [
         # Apps & session
-        "$mod, Return, exec, kgx"
+        "$mod, Return, exec, gnome-terminal"
         "$mod, D, exec, wofi --show drun"
         "$mod, E, exec, nautilus"
         "$mod, Q, killactive"
