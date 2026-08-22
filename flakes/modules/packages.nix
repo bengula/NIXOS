@@ -6,6 +6,7 @@
     wget
     git
     gnome-tweaks
+    gnome-terminal
 
     # Productivity
     libreoffice

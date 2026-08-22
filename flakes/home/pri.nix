@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./terminal.nix ];
+
   home.username = "pri";
   home.homeDirectory = "/home/pri";
   home.stateVersion = "25.11";
