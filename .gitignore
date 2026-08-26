@@ -1,0 +1,11 @@
+# Obsidian workspace state — per-machine UI layout, not configuration.
+.obsidian/
+
+# Home Manager moves clobbered files aside with this suffix.
+*.hm-bak
+
+# Editor / OS noise
+*.swp
+.DS_Store
+result
+result-*
