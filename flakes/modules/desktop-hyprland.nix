@@ -29,6 +29,14 @@
       wayland.windowManager.hyprland = {
         enable = true;
 
+        # Pinned, not left to the stateVersion default. Home Manager flips this
+        # to "lua" at stateVersion 26.05, and the submaps in ./hyprland-keys.nix
+        # are raw hyprlang written through `extraConfig` — they would stop being
+        # parsed the day home.stateVersion is bumped, silently taking Super + R
+        # and Super + W with them. Converting to Lua is a deliberate job, not a
+        # side effect of a version bump.
+        configType = "hyprlang";
+
         settings = {
           # Monitor — auto-detect; adjust if needed e.g. "DP-1,1920x1080@60,0x0,1"
           monitor = ",preferred,auto,1";
