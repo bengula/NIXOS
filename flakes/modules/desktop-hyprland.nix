@@ -33,10 +33,9 @@
       wayland.windowManager.hyprland = {
         enable = true;
 
-        # Pinned explicitly: bumping home.stateVersion to 26.05 flips this
-        # module's default to "lua", but `settings` below is written for the
-        # classic hyprlang backend.
-        configType = "hyprlang";
+        # hyprlang is deprecated as of Hyprland 0.55 and dropped within a
+        # release or two — Lua is the supported format going forward.
+        configType = "lua";
 
         settings = {
           # Monitor — auto-detect; adjust if needed e.g. "DP-1,1920x1080@60,0x0,1"
