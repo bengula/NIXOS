@@ -60,7 +60,6 @@
 
         settings = {
           general = {
-            disable_loading_bar = true;
             hide_cursor = true;
             ignore_empty_input = true;
             # Draw the first frame before showing anything, so locking never

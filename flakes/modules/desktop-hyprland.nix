@@ -10,6 +10,10 @@
         xwayland.enable = true;
       };
 
+      # Without this, hyprlock has no /etc/pam.d/hyprlock and silently falls
+      # back to the "su" PAM stack to check the password.
+      security.pam.services.hyprlock = { };
+
       environment.systemPackages = with pkgs; [
         waybar
         wofi
