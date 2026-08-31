@@ -19,7 +19,7 @@
       binds =
         [
           # Apps & session
-          { g = "Apps & session"; k = "$mod, Return"; d = "exec"; a = "gnome-terminal"; t = "Terminal"; }
+          { g = "Apps & session"; k = "$mod, Return"; d = "exec"; a = "kitty"; t = "Terminal"; }
           { g = "Apps & session"; k = "$mod, D"; d = "exec"; a = "wofi --show drun"; t = "App launcher"; }
           { g = "Apps & session"; k = "$mod, E"; d = "exec"; a = "nautilus"; t = "Files"; }
           { g = "Apps & session"; k = "$mod, B"; d = "exec"; a = "google-chrome-stable"; t = "Browser"; }
@@ -110,7 +110,66 @@
 
       # ── Derivation of everything else ──────────────────────────────────
       argOf = b: b.a or "";
-      toBind = b: if argOf b == "" then "${b.k}, ${b.d}" else "${b.k}, ${b.d}, ${argOf b}";
+
+      # ── Lua emission ────────────────────────────────────────────────────
+      # Hyprland's Lua config takes hl.bind(keyCombo, dispatcherObject, opts?) —
+      # NOT the old "MOD, KEY, dispatcher, args" single string. home-manager's
+      # `settings.bind` writer still emits the old single-string form, which
+      # Hyprland's Lua loader rejects, so every bind silently fails to register
+      # and Hyprland falls back to its built-in emergency keymap. Binds are
+      # therefore emitted here as hand-written Lua via extraConfig instead of
+      # going through `settings.bind`.
+      luaStr = s: builtins.toJSON s; # cheap correct Lua string literal (JSON escaping matches Lua's)
+
+      keyToLua =
+        k:
+        let
+          parts = lib.splitString "," k;
+          modsPart = builtins.replaceStrings [ "$mod" ] [ "SUPER" ] (builtins.elemAt parts 0);
+          keyPart = lib.removePrefix " " (builtins.elemAt parts 1);
+          mods = builtins.filter (s: s != "") (lib.splitString " " modsPart);
+        in
+        lib.concatStringsSep " + " (mods ++ [ keyPart ]);
+
+      # Maps each dispatcher name + arg string used in `binds` above to the
+      # equivalent hl.dsp.* call, per Hyprland's own example/hyprland.lua and
+      # its Lua API docs.
+      dispatcherToLua =
+        b:
+        let
+          a = argOf b;
+        in
+        if b.d == "exec" then
+          "hl.dsp.exec_cmd(${luaStr a})"
+        else if b.d == "killactive" then
+          "hl.dsp.window.close()"
+        else if b.d == "togglefloating" then
+          "hl.dsp.window.float({ action = \"toggle\" })"
+        else if b.d == "fullscreen" then
+          "hl.dsp.window.fullscreen()"
+        else if b.d == "pseudo" then
+          "hl.dsp.window.pseudo()"
+        else if b.d == "togglesplit" then
+          "hl.dsp.layout(\"togglesplit\")"
+        else if b.d == "movefocus" then
+          "hl.dsp.focus({ direction = ${luaStr a} })"
+        else if b.d == "movewindow" then
+          "hl.dsp.window.move({ direction = ${luaStr a} })"
+        else if b.d == "resizeactive" then
+          let
+            xy = builtins.filter (s: s != "") (lib.splitString " " a);
+          in
+          "hl.dsp.window.resize({ x = ${builtins.elemAt xy 0}, y = ${builtins.elemAt xy 1}, relative = true })"
+        else if b.d == "workspace" then
+          "hl.dsp.focus({ workspace = ${luaStr a} })"
+        else if b.d == "movetoworkspace" then
+          "hl.dsp.window.move({ workspace = ${luaStr a} })"
+        else if b.d == "togglespecialworkspace" then
+          "hl.dsp.workspace.toggle_special(${luaStr a})"
+        else
+          throw "hyprland-keys.nix: no hl.dsp mapping for dispatcher '${b.d}' — add one in dispatcherToLua";
+
+      toLuaBind = b: "hl.bind(${luaStr (keyToLua b.k)}, ${dispatcherToLua b})";
 
       prettyKey =
         k:
@@ -265,57 +324,58 @@
         pkgs.libnotify
       ];
 
-      wayland.windowManager.hyprland.settings = {
-        "$mod" = "SUPER";
-
-        bind = map toBind binds;
-
-        bindm = [
-          "$mod, mouse:272, movewindow"
-          "$mod, mouse:273, resizewindow"
-        ];
-      };
-
-      # Submaps are order-sensitive, so they are written as raw config rather
-      # than through `settings`. waybar's hyprland/submap module shows which
-      # one is active, and hypr-mode puts the key list on screen.
+      # Everything below goes through extraConfig as hand-written Lua, not
+      # `settings.bind`/`settings.bindm` — see the note on dispatcherToLua
+      # above for why the settings.bind writer can't be used here.
       wayland.windowManager.hyprland.extraConfig = ''
-        # ── Resize mode  (Super + R) ──────────────────────────────────────
-        submap = resize
-        binde = , h, resizeactive, -40 0
-        binde = , l, resizeactive, 40 0
-        binde = , k, resizeactive, 0 -40
-        binde = , j, resizeactive, 0 40
-        binde = , left, resizeactive, -40 0
-        binde = , right, resizeactive, 40 0
-        binde = , up, resizeactive, 0 -40
-        binde = , down, resizeactive, 0 40
-        binde = SHIFT, h, resizeactive, -120 0
-        binde = SHIFT, l, resizeactive, 120 0
-        binde = SHIFT, k, resizeactive, 0 -120
-        binde = SHIFT, j, resizeactive, 0 120
-        bind = , escape, exec, hypr-mode reset
-        bind = , return, exec, hypr-mode reset
-        submap = reset
+        ${lib.concatMapStringsSep "\n" toLuaBind binds}
 
-        # ── Window mode  (Super + W) ──────────────────────────────────────
-        submap = window
-        bind = , h, movewindow, l
-        bind = , l, movewindow, r
-        bind = , k, movewindow, u
-        bind = , j, movewindow, d
-        bind = , left, movewindow, l
-        bind = , right, movewindow, r
-        bind = , up, movewindow, u
-        bind = , down, movewindow, d
-        bind = , f, fullscreen
-        bind = , v, togglefloating
-        bind = , p, pseudo
-        bind = , t, togglesplit
-        bind = , q, killactive
-        bind = , escape, exec, hypr-mode reset
-        bind = , return, exec, hypr-mode reset
-        submap = reset
+        hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
+        hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+        local resize = function(key, x, y, modifiers)
+          local bind_key = key
+          if modifiers then bind_key = modifiers .. " + " .. key end
+          hl.bind(bind_key, hl.dsp.window.resize({ x = x, y = y, relative = true }), { repeating = true })
+        end
+
+        hl.define_submap("resize", function()
+          resize("h", -40, 0)
+          resize("l", 40, 0)
+          resize("k", 0, -40)
+          resize("j", 0, 40)
+          resize("left", -40, 0)
+          resize("right", 40, 0)
+          resize("up", 0, -40)
+          resize("down", 0, 40)
+          resize("h", -120, 0, "SHIFT")
+          resize("l", 120, 0, "SHIFT")
+          resize("k", 0, -120, "SHIFT")
+          resize("j", 0, 120, "SHIFT")
+          hl.bind("escape", hl.dsp.submap("reset"))
+          hl.bind("return", hl.dsp.submap("reset"))
+        end)
+
+        hl.define_submap("window", function()
+          local move = function(key, direction)
+            hl.bind(key, hl.dsp.window.move({ direction = direction }))
+          end
+          move("h", "l")
+          move("l", "r")
+          move("k", "u")
+          move("j", "d")
+          move("left", "l")
+          move("right", "r")
+          move("up", "u")
+          move("down", "d")
+          hl.bind("f", hl.dsp.window.fullscreen())
+          hl.bind("v", hl.dsp.window.float())
+          hl.bind("p", hl.dsp.window.pseudo())
+          hl.bind("t", hl.dsp.layout("togglesplit"))
+          hl.bind("q", hl.dsp.window.close())
+          hl.bind("escape", hl.dsp.submap("reset"))
+          hl.bind("return", hl.dsp.submap("reset"))
+        end)
       '';
     };
 }

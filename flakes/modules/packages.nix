@@ -13,34 +13,15 @@
         # Productivity
         libreoffice
         obsidian
-
-    # Productivity
-    libreoffice
-    obsidian
-
-    # Productivity
-    libreoffice
-    obsidian
-    thunderbird
-    codex
+        thunderbird
+        codex
+        claude-code
 
         # Development
         vscodium
         python3
         texliveFull
-        nodejs_20 # Node.js 20 LTS — bundles `npm` (matches the portal's shell.nix)
-
-    # Development
-    vscodium
-    python3
-    texliveFull
-    nodejs_20      # Node.js 20 LTS — bundles `npm` (matches the Bengula portal's shell.nix)
-
-    # Development
-    vscodium
-    python3
-    texliveFull
-    nodejs_20      # Node.js 20 LTS — bundles `npm` (matches the Bengula portal's shell.nix)
+        nodejs_22 # Node.js 22 LTS — bundles `npm` (matches the portal's shell.nix)
 
         # Browsers
         google-chrome
