@@ -60,6 +60,7 @@ flakes/
 │   ├── portals.nix              xdg-desktop-portal, per-session
 │   ├── hyprland-keys.nix        ★ keybindings + the key palette + which-key modes
 │   ├── waybar.nix               the bar (incl. mode indicator + keys button)
+│   ├── dynamic-island.nix       the floating pill: media, volume, weather
 │   ├── wofi.nix                 launcher + palette styling
 │   ├── lock.nix                 hyprlock, hypridle, the lock/unlock wallpaper sequence
 │   ├── wallpaper.nix            ★ animated shader wallpaper (Orbit)

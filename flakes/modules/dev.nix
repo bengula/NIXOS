@@ -10,7 +10,15 @@
         enableFishIntegration = true;
       };
 
-      programs.neovim.enable = true;
+      programs.neovim = {
+        enable = true;
+        # Both default to true below stateVersion 26.05 and false above it.
+        # Pinned to the new value: nothing here uses the Ruby or Python remote
+        # plugin providers, and they drag a full Ruby and Python closure into
+        # every rebuild — which matters on a slow link.
+        withRuby = false;
+        withPython3 = false;
+      };
 
       programs.direnv = {
         enable = true;

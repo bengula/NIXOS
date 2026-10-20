@@ -27,6 +27,7 @@ in
       nixos.hyprland
       nixos.portals
       nixos.terminal
+      nixos.dynamic-island
 
       # Users' environments
       nixos.home-manager

@@ -74,6 +74,21 @@ Non-module code lives alongside `modules/`:
   (`Super + /`), the which-key modes (resize/window), and the waybar mode
   indicator — so they can't drift apart. Changing a binding means editing
   that one list, not the three consumers.
+- **`hyprctl dispatch` takes Lua here.** Under `configType = "lua"` its
+  argument is evaluated as Lua, so `hyprctl dispatch exec kitty` is a syntax
+  error that silently does nothing — it has to be
+  `hyprctl dispatch 'hl.dsp.exec_cmd("kitty")'`. (`hyprctl keyword` has no
+  Lua equivalent at all; use `hyprctl eval`.) Everything here that shells out
+  to `hyprctl` — the key palette, the which-key modes, the exit menu,
+  hypridle's dpms timers — uses that form, and the dispatcher names are
+  listed in hyprland's own `share/hypr/stubs/hl.meta.lua`.
+- **The dynamic island** (`modules/dynamic-island.nix`) is a second waybar
+  *bar*, not a second process — it shares `waybar.nix`'s stylesheet (appended
+  with `lib.mkAfter`, every rule scoped under `window#waybar.island` so it
+  cannot reach the main bar) and the single `waybar` started from Hyprland's
+  exec-once. It floats rather than reserving space (`exclusive = false`), and
+  its `width` is both what centres it and its clickable region, so that number
+  has to stay a little wider than the fully expanded pill.
 - **Locking** (`modules/lock.nix`) is the one entry point (`hypr-lock`) used
   by the idle timer, the lid switch, and `Super + Escape` alike, so all three
   paths keep logind's `LockedHint` consistent. It also drives

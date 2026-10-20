@@ -76,10 +76,9 @@
           { g = "Workspaces"; k = "$mod, S"; d = "togglespecialworkspace"; a = "magic"; t = "Toggle scratchpad"; }
           { g = "Workspaces"; k = "$mod SHIFT, S"; d = "movetoworkspace"; a = "special:magic"; t = "Send window to scratchpad"; }
 
-          # Screenshots. The work is in `hypr-shot` rather than inline shell:
-          # the palette re-runs these commands through `hyprctl dispatch`, which
-          # does not preserve quoting, so anything with a "$(…)" in it has to be
-          # a single word here.
+          # Screenshots. The work is in `hypr-shot` rather than inline shell so
+          # that the palette entry, the keybind and the notification it sends
+          # stay one thing.
           { g = "Screenshots"; k = ", Print"; d = "exec"; a = "hypr-shot full"; t = "Whole screen — saved and copied"; label = "PrintScreen"; }
           { g = "Screenshots"; k = "$mod, Print"; d = "exec"; a = "hypr-shot region"; t = "Select a region — saved and copied"; }
           { g = "Screenshots"; k = "$mod SHIFT, Print"; d = "exec"; a = "hypr-shot window"; t = "Focused window — saved and copied"; }
@@ -88,6 +87,9 @@
           { g = "Media"; k = ", XF86AudioRaiseVolume"; d = "exec"; a = "pamixer -i 5"; t = "Volume up"; label = "Volume up key"; }
           { g = "Media"; k = ", XF86AudioLowerVolume"; d = "exec"; a = "pamixer -d 5"; t = "Volume down"; label = "Volume down key"; }
           { g = "Media"; k = ", XF86AudioMute"; d = "exec"; a = "pamixer -t"; t = "Mute / unmute"; label = "Mute key"; }
+          { g = "Media"; k = ", XF86AudioPlay"; d = "exec"; a = "playerctl --player playerctld,%any play-pause"; t = "Play / pause"; label = "Play key"; }
+          { g = "Media"; k = ", XF86AudioNext"; d = "exec"; a = "playerctl --player playerctld,%any next"; t = "Next track"; label = "Next key"; }
+          { g = "Media"; k = ", XF86AudioPrev"; d = "exec"; a = "playerctl --player playerctld,%any previous"; t = "Previous track"; label = "Previous key"; }
           { g = "Media"; k = ", XF86MonBrightnessUp"; d = "exec"; a = "brightnessctl set 10%+"; t = "Brightness up"; label = "Brightness up key"; }
           { g = "Media"; k = ", XF86MonBrightnessDown"; d = "exec"; a = "brightnessctl set 10%-"; t = "Brightness down"; label = "Brightness down key"; }
         ]
@@ -203,9 +205,13 @@
 
       entries = builtins.filter (e: !(e.hide or false)) (binds ++ docs);
 
+      # The second column is the same Lua the bind itself uses. `hyprctl
+      # dispatch` under a Lua config evaluates its argument as Lua — the old
+      # "dispatcher args" wire format parses as a syntax error and does
+      # nothing — so the palette has to hand it a dispatcher object.
       rowOf = e: {
         display = "  ${pad 26 (e.label or (prettyKey e.k))}${e.t}";
-        cmd = if e ? d then "${e.d} ${argOf e}" else "";
+        cmd = if e ? d then dispatcherToLua e else "";
       };
 
       block =
@@ -241,31 +247,32 @@
               'function tr(x) { gsub(/^[ \t]+|[ \t]+$/, "", x); return x }
                tr($1) == tr(s) { print $2; exit }' "$map")
         [ -n "$cmd" ] || exit 0
-        ${pkgs.hyprland}/bin/hyprctl dispatch $cmd
+        ${pkgs.hyprland}/bin/hyprctl dispatch "$cmd"
       '';
 
       # which-key style modes: show the keys, then enter the submap.
       hypr-mode = pkgs.writeShellScriptBin "hypr-mode" ''
         set -eu
         hint() { ${pkgs.libnotify}/bin/notify-send -r 9001 -t "$1" -u low "$2" "$3"; }
-        dispatch() { ${pkgs.hyprland}/bin/hyprctl dispatch "$@" >/dev/null; }
+        # Lua config: the dispatcher is an hl.dsp.* call, not a bare word.
+        submap() { ${pkgs.hyprland}/bin/hyprctl dispatch "hl.dsp.submap(\"$1\")" >/dev/null; }
 
         case "''${1:-reset}" in
           resize)
             hint 0 "Resize mode" "h j k l  or arrows   resize
         Shift + direction           bigger steps
         Esc  or  Return             back to normal"
-            dispatch submap resize
+            submap resize
             ;;
           window)
             hint 0 "Window mode" "h j k l  or arrows   move the window
         f fullscreen    v float     q close
         p pseudo-tile   t flip split
         Esc  or  Return             back to normal"
-            dispatch submap window
+            submap window
             ;;
           *)
-            dispatch submap reset
+            submap reset
             hint 900 "Normal mode" " "
             ;;
         esac
@@ -310,7 +317,7 @@
                    --width 380 --height 200 --cache-file /dev/null) || exit 0
         case "$answer" in
           "Lock the screen")      hypr-lock ;;
-          "Log out of Hyprland")  ${pkgs.hyprland}/bin/hyprctl dispatch exit ;;
+          "Log out of Hyprland")  ${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.exit()' ;;
           *)                      exit 0 ;;
         esac
       '';

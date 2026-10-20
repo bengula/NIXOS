@@ -15,6 +15,7 @@ in
         homeManager.hyprland-keys
         homeManager.wofi
         homeManager.waybar
+        homeManager.dynamic-island
         homeManager.lock
         homeManager.wallpaper
       ];

@@ -7,7 +7,7 @@
 # Because esbuild bundles with `--packages=external`, the server still needs
 # node_modules at runtime, so we keep a pruned (prod-only) node_modules in the
 # output and run it with `node dist/server.cjs`.
-{ lib, buildNpmPackage, nodejs_20, makeWrapper, src }:
+{ lib, buildNpmPackage, nodejs, makeWrapper, src }:
 
 buildNpmPackage {
   pname = "bengula-portal";
@@ -15,8 +15,10 @@ buildNpmPackage {
 
   inherit src;
 
-  # Use the same Node major version as the dev shell / system package.
-  nodejs = nodejs_20;
+  # Track the same Node as the system package in modules/packages.nix. Pinning
+  # a major version here is how this file came to reference nodejs_20 four
+  # months after it went end-of-life and was dropped from nixpkgs.
+  inherit nodejs;
 
   # For the bin/ wrapper created in installPhase.
   nativeBuildInputs = [ makeWrapper ];
@@ -47,7 +49,7 @@ buildNpmPackage {
     # Wrapper entrypoint. The server reads its static `dist/` relative to the
     # process CWD and only serves the production build when NODE_ENV=production,
     # so the wrapper pins both. PORT is supplied by the runtime environment.
-    makeWrapper ${nodejs_20}/bin/node $out/bin/bengula-portal \
+    makeWrapper ${nodejs}/bin/node $out/bin/bengula-portal \
       --add-flags "$out/lib/bengula-portal/dist/server.cjs" \
       --chdir "$out/lib/bengula-portal" \
       --set NODE_ENV production

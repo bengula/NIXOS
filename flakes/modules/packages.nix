@@ -9,7 +9,6 @@
         gnome-tweaks
         libnotify # notify-send — used by the Hyprland mode hints
 
-
         # Productivity
         libreoffice
         obsidian
@@ -21,10 +20,11 @@
         vscodium
         python3
         texliveFull
-        nodejs_22 # Node.js 22 LTS — bundles `npm` (matches the portal's shell.nix)
+        nodejs # Node.js Active LTS (or `nodejs_22` / `nodejs_24`)
 
         # Browsers
         google-chrome
+        antigravity
 
         # Media
         spotify
@@ -41,6 +41,7 @@
         # Android / camera tools
         android-tools
         v4l-utils
+        gnomeExtensions.gsconnect
       ];
 
       fonts.packages = with pkgs; [

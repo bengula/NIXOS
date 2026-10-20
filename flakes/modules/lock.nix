@@ -177,7 +177,7 @@
             # same path through hypr-lock.
             lock_cmd = "${pkgs.procps}/bin/pidof hyprlock || ${hypr-lock}/bin/hypr-lock";
             before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
-            after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+            after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
           };
 
           listener = [
@@ -195,8 +195,8 @@
             # 15 min — screen off.
             {
               timeout = 900;
-              on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
-              on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+              on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"off\")'";
+              on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
             }
           ];
         };
