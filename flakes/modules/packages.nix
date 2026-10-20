@@ -24,7 +24,7 @@
 
         # Browsers
         google-chrome
-        antigravity
+        antigravity-ide
 
         # Media
         spotify
