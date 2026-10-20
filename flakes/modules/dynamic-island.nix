@@ -39,10 +39,12 @@
       # but still work if it is not running.
       playerctl = "${pkgs.playerctl}/bin/playerctl --player playerctld,%any";
 
-      # "" asks wttr.in to geolocate by IP, which is right for a laptop that
-      # moves. Set it to a place name ("Maseno", "Kisumu") to pin it, or
-      # export ISLAND_WEATHER_LOCATION to override it for one session.
-      weatherLocation = "";
+      # Pinned rather than "" (geolocate by IP), because the IP lookup
+      # resolves to the ISP's exit node — it reported "Nairobi Industrial
+      # Area", some 500 km inland of where this machine actually is. Export
+      # ISLAND_WEATHER_LOCATION to override it for one session, or set this
+      # back to "" to go by IP again.
+      weatherLocation = "Malindi";
 
       # The play/pause button has to know which icon to show, and MPRIS state
       # can change without the island doing anything (a keyboard media key,
@@ -128,7 +130,10 @@
         position = "top";
         exclusive = false;
         height = 30;
-        width = 480;
+        # Wide enough for the fully expanded pill — both drawers open — plus
+        # the idle-inhibitor toggle. Raise it when adding a module, or the
+        # drawer clips instead of sliding out.
+        width = 520;
         margin-top = 4;
         spacing = 0;
 
@@ -136,6 +141,7 @@
         modules-center = [
           "group/island-media"
           "group/island-sound"
+          "idle_inhibitor"
           "custom/weather"
         ];
         modules-right = [ ];
@@ -205,7 +211,10 @@
             paused = "󰏤";
             stopped = "󰓛";
           };
-          tooltip-format = "{player}\n{title}\n{artist}";
+          # {position}/{length} need the `interval` above to tick; they go in
+          # the tooltip rather than `format` because the pill is width-bound
+          # and `dynamic-len` is already truncating the title at 18.
+          tooltip-format = "{player}\n{title}\n{artist}\n{position} / {length}";
           on-click = "${playerctl} play-pause";
           on-click-middle = "${playerctl} next";
           on-scroll-up = "${playerctl} next";
@@ -256,6 +265,21 @@
           orientation = "horizontal";
         };
 
+        # ./lock.nix locks the session at 600s and blanks the screen at 900s,
+        # which is wrong for anything you are watching rather than doing. This
+        # is waybar's own inhibitor — no script, and it holds the inhibit only
+        # while it is toggled on. There is no battery on this machine, so
+        # leaving it on costs nothing but a brighter room.
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "󰅶";
+            deactivated = "󰾪";
+          };
+          tooltip-format-activated = "Staying awake — click to allow idle again";
+          tooltip-format-deactivated = "Idle timers active — click to stay awake";
+        };
+
         "custom/weather" = {
           format = "{}";
           return-type = "json";
@@ -297,6 +321,7 @@
 
         window#waybar.island #mpris,
         window#waybar.island #pulseaudio,
+        window#waybar.island #idle_inhibitor,
         window#waybar.island #custom-weather {
           padding: 0 10px;
           color: #c0caf5;
@@ -311,10 +336,22 @@
           color: #565f89;
         }
 
-        /* Hairlines between the three segments. */
+        /* Hairlines between the segments. */
         window#waybar.island #pulseaudio,
+        window#waybar.island #idle_inhibitor,
         window#waybar.island #custom-weather {
           border-left: 1px solid rgba(192, 202, 245, 0.12);
+        }
+
+        /* Amber while it is holding the inhibit — the same colour the main
+           bar uses for its submap indicator, i.e. "a mode is on". Dim when
+           it is not, so the island reads as idle at a glance. */
+        window#waybar.island #idle_inhibitor.activated {
+          color: #e0af68;
+        }
+
+        window#waybar.island #idle_inhibitor.deactivated {
+          color: #565f89;
         }
 
         /* Revealed on hover: play/pause between the two skip buttons. */
