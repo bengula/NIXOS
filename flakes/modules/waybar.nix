@@ -113,6 +113,9 @@
           ];
           modules-center = [ "clock" ];
           modules-right = [
+            # Invisible unless a recording is running — ./record.nix owns the
+            # module itself, this is only where it sits.
+            "custom/rec"
             "custom/keys"
             "network"
             "battery"

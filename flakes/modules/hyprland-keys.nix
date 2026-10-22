@@ -36,6 +36,13 @@
           { g = "Apps & session"; k = "$mod, slash"; d = "exec"; a = "hypr-keys"; t = "Show this list (Enter runs an entry)"; label = "Super + /"; }
           { g = "Apps & session"; k = "$mod, F1"; d = "exec"; a = "hypr-keys"; t = "Show this list"; hide = true; }
 
+          # Windows, clipboard and the rest of the session's tools. The
+          # scripts live in their own aspects (../modules/clipboard.nix,
+          # record.nix, …) and are on PATH through home.packages; this list
+          # stays the only place that says which key runs them.
+          { g = "Apps & session"; k = "$mod, O"; d = "exec"; a = "hypr-windows"; t = "Go to any open window"; }
+          { g = "Apps & session"; k = "$mod SHIFT, B"; d = "exec"; a = "hypr-night"; t = "Night light on / off"; }
+
           # Modes — press once, then use single keys
           { g = "Modes"; k = "$mod, R"; d = "exec"; a = "hypr-mode resize"; t = "Resize mode — keys shown on screen"; }
           { g = "Modes"; k = "$mod, W"; d = "exec"; a = "hypr-mode window"; t = "Window mode — keys shown on screen"; }
@@ -76,12 +83,36 @@
           { g = "Workspaces"; k = "$mod, S"; d = "togglespecialworkspace"; a = "magic"; t = "Toggle scratchpad"; }
           { g = "Workspaces"; k = "$mod SHIFT, S"; d = "movetoworkspace"; a = "special:magic"; t = "Send window to scratchpad"; }
 
+          # Clipboard & text
+          { g = "Clipboard"; k = "$mod SHIFT, V"; d = "exec"; a = "hypr-clip"; t = "Clipboard history"; }
+          { g = "Clipboard"; k = "$mod, period"; d = "exec"; a = "hypr-emoji"; t = "Emoji picker"; label = "Super + ."; }
+
           # Screenshots. The work is in `hypr-shot` rather than inline shell so
           # that the palette entry, the keybind and the notification it sends
           # stay one thing.
           { g = "Screenshots"; k = ", Print"; d = "exec"; a = "hypr-shot full"; t = "Whole screen — saved and copied"; label = "PrintScreen"; }
           { g = "Screenshots"; k = "$mod, Print"; d = "exec"; a = "hypr-shot region"; t = "Select a region — saved and copied"; }
           { g = "Screenshots"; k = "$mod SHIFT, Print"; d = "exec"; a = "hypr-shot window"; t = "Focused window — saved and copied"; }
+
+          { g = "Screenshots"; k = "$mod CTRL, Print"; d = "exec"; a = "hypr-shot edit"; t = "Select a region, then annotate it"; }
+          { g = "Screenshots"; k = "$mod SHIFT, C"; d = "exec"; a = "hypr-pick"; t = "Pick a colour — hex to the clipboard"; }
+
+          # Recording. Every one of these is a toggle: the same keys stop it.
+          { g = "Recording"; k = "$mod CTRL, R"; d = "exec"; a = "hypr-rec region"; t = "Record a region — press again to stop"; }
+          { g = "Recording"; k = "$mod CTRL, S"; d = "exec"; a = "hypr-rec screen"; t = "Record the screen — press again to stop"; }
+          { g = "Recording"; k = "$mod CTRL, A"; d = "exec"; a = "hypr-rec audio"; t = "Record the screen with audio"; }
+
+          # Zoom. The scroll binds are the ones worth remembering; Z is the
+          # way back when the zoom has been left on.
+          { g = "Zoom"; k = "$mod, mouse_up"; d = "exec"; a = "hypr-zoom in"; t = "Zoom in"; label = "Super + scroll up"; }
+          { g = "Zoom"; k = "$mod, mouse_down"; d = "exec"; a = "hypr-zoom out"; t = "Zoom out"; label = "Super + scroll down"; }
+          { g = "Zoom"; k = "$mod, Z"; d = "exec"; a = "hypr-zoom reset"; t = "Back to 100%"; }
+
+          # Notifications — dunst is configured in ./desktop-hyprland.nix and
+          # ships dunstctl, so these need nothing of their own.
+          { g = "Notifications"; k = "$mod, N"; d = "exec"; a = "dunstctl history-pop"; t = "Bring back the last notification"; }
+          { g = "Notifications"; k = "$mod SHIFT, N"; d = "exec"; a = "dunstctl close-all"; t = "Dismiss all notifications"; }
+          { g = "Notifications"; k = "$mod CTRL, N"; d = "exec"; a = "dunstctl set-paused toggle"; t = "Do not disturb on / off"; }
 
           # Media
           { g = "Media"; k = ", XF86AudioRaiseVolume"; d = "exec"; a = "pamixer -i 5"; t = "Volume up"; label = "Volume up key"; }
@@ -198,7 +229,11 @@
         "Move window"
         "Resize"
         "Workspaces"
+        "Clipboard"
         "Screenshots"
+        "Recording"
+        "Zoom"
+        "Notifications"
         "Media"
         "Mouse"
       ];
@@ -288,6 +323,31 @@
         file="$dir/$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S).png"
 
         case "''${1:-full}" in
+          edit)
+            # Annotate before it lands anywhere. satty reads the capture on
+            # stdin, so nothing is written if the annotation is abandoned —
+            # there is no half-finished screenshot left in Pictures either way.
+            geom=$(${pkgs.slurp}/bin/slurp) || exit 0
+            ${pkgs.grim}/bin/grim -g "$geom" - |
+              ${pkgs.satty}/bin/satty --filename - \
+                --output-filename "$file" \
+                --copy-command ${pkgs.wl-clipboard}/bin/wl-copy \
+                --actions-on-enter save-to-file \
+                --actions-on-enter save-to-clipboard \
+                --early-exit all \
+                --initial-tool arrow \
+                --disable-notifications
+
+            # Escape in satty saves nothing, so there may be no file at all.
+            # Enter saves *and* copies; Ctrl+S only saves — the copy below is
+            # what keeps "saved and copied" true for both.
+            if [ -s "$file" ]; then
+              ${pkgs.wl-clipboard}/bin/wl-copy --type image/png < "$file"
+              ${pkgs.libnotify}/bin/notify-send -t 5000 -i "$file" \
+                'Screenshot' "Annotated — copied to the clipboard, saved in $dir"
+            fi
+            exit 0
+            ;;
           region)
             # Cancelling slurp (Esc) must leave no empty file behind.
             geom=$(${pkgs.slurp}/bin/slurp) || exit 0

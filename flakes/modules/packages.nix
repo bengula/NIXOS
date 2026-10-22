@@ -27,6 +27,7 @@
         antigravity-ide
 
         # Media
+        vlc # every user gets it; the island's mpris module already knows it
         spotify
         teams-for-linux
         telegram-desktop

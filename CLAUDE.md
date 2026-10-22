@@ -73,7 +73,9 @@ Non-module code lives alongside `modules/`:
   list that generates three things at once — the searchable wofi palette
   (`Super + /`), the which-key modes (resize/window), and the waybar mode
   indicator — so they can't drift apart. Changing a binding means editing
-  that one list, not the three consumers.
+  that one list, not the three consumers. Scripts bound from there live in
+  their own aspects (`clipboard.nix`, `record.nix`, `zoom.nix`, …) and are
+  named bare, since `home.packages` puts them on PATH.
 - **`hyprctl dispatch` takes Lua here.** Under `configType = "lua"` its
   argument is evaluated as Lua, so `hyprctl dispatch exec kitty` is a syntax
   error that silently does nothing — it has to be
@@ -89,6 +91,32 @@ Non-module code lives alongside `modules/`:
   exec-once. It floats rather than reserving space (`exclusive = false`), and
   its `width` is both what centres it and its clickable region, so that number
   has to stay a little wider than the fully expanded pill.
+- **Session-only user services.** Everything that would fight a GNOME
+  equivalent is bound to `hyprland-session.target` instead of
+  `graphical-session.target`, with `lib.mkForce` on the `Unit`/`Install`
+  blocks Home Manager generates: dunst, hypridle, the wallpaper renderer,
+  `hyprpolkitagent` (`modules/polkit.nix` — a session can register only one
+  polkit agent, and gnome-shell registers its own), `udiskie`
+  (`modules/automount.nix` — gvfs already automounts under GNOME),
+  `hyprsunset` (`modules/nightlight.nix` — two gamma shifts stack) and
+  cliphist/wl-clip-persist (`modules/clipboard.nix`). To check, list the
+  generated units with
+  `nix eval …config.home-manager.users.bebe.xdg.configFile --apply builtins.attrNames`:
+  a new service appearing under `graphical-session.target.wants` is the bug.
+- **The recorder indicator spans two files.** `modules/record.nix` defines the
+  `custom/rec` waybar module and its CSS (appended with `lib.mkAfter`, the same
+  trick as the island), but its *position* is one entry in `modules-right` in
+  `modules/waybar.nix` — adding the module without that line gives a working
+  recorder with no visible stop button. `hypr-rec` prints `{"text":""}` rather
+  than nothing when idle, because waybar logs a parse error on non-JSON from a
+  `return-type = "json"` module.
+- **Window rules** (`modules/window-rules.nix`) are validated by Hyprland:
+  `hl.window_rule` rejects an unknown field outright (it is `border_size = 0`;
+  there is no `no_border`), and a rejected field aborts the Lua chunk, taking
+  every rule *after* it down with it. Verify a new rule live before
+  committing it:
+  `hyprctl eval 'hl.window_rule({ name = "probe", match = { class = "^(x)$" }, … })'`
+  answers `ok` or names the bad field.
 - **Locking** (`modules/lock.nix`) is the one entry point (`hypr-lock`) used
   by the idle timer, the lid switch, and `Super + Escape` alike, so all three
   paths keep logind's `LockedHint` consistent. It also drives
