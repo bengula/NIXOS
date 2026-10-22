@@ -34,8 +34,11 @@
   rounding = 14;
 
   # Geometric and round rather than humanist, which is the single biggest
-  # difference in how the toolkit apps read. Quicksand ships Light/Regular/
-  # Bold only, so nothing here asks for a weight it does not have.
+  # difference in how the toolkit apps read. nixpkgs ships the variable build,
+  # Quicksand[wght].ttf: one file with a wght axis of 300-700, which
+  # fontconfig exposes both as that range and as four named instances (Light,
+  # Regular, Medium, Bold). So a bold label is a real cut rather than a
+  # synthesised smear, and nothing here has to pick a weight by hand.
   font = {
     name = "Quicksand";
     package = pkgs.quicksand;
