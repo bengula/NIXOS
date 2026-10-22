@@ -5,62 +5,74 @@
 # Home Manager `programs.wofi` module so it does not depend on that module
 # existing in whichever home-manager revision is pinned.
 {
-  flake.modules.homeManager.wofi = {
-    # NOTE: no `allow_markup` — the shortcut palette contains literal "&"
-    # ("Apps & session"), which Pango would reject as a bad entity.
-    xdg.configFile."wofi/config".text = ''
-      allow_images=true
-      insensitive=true
-      no_actions=true
-      key_expand=Tab
-    '';
+  flake.modules.homeManager.wofi =
+    { config, ... }:
+    let
+      palette = config.look.palette;
 
-    # Tokyo Night, translucent to sit on the same frosted surface as the bar
-    # and the terminal (Hyprland's `layerrule` blurs behind it).
-    xdg.configFile."wofi/style.css".text = ''
-      window {
-        font-family: "JetBrainsMono Nerd Font", monospace;
-        font-size: 13px;
-        background-color: rgba(26, 27, 38, 0.82);
-        border: 2px solid #7aa2f7;
-        border-radius: 14px;
-        color: #c0caf5;
-      }
+      # The frame rounds a little wider than the rows inside it, both off the
+      # one number in ../looks/.
+      frameRadius = toString (config.look.rounding + 4);
+      rowRadius = toString config.look.rounding;
+    in
+    {
+      # NOTE: no `allow_markup` — the shortcut palette contains literal "&"
+      # ("Apps & session"), which Pango would reject as a bad entity.
+      xdg.configFile."wofi/config".text = ''
+        allow_images=true
+        insensitive=true
+        no_actions=true
+        key_expand=Tab
+      '';
 
-      #input {
-        margin: 10px;
-        padding: 8px 12px;
-        border: none;
-        border-radius: 10px;
-        background-color: rgba(65, 72, 104, 0.55);
-        color: #c0caf5;
-      }
+      # Translucent to sit on the same frosted surface as the bar and the
+      # terminal (Hyprland's `layerrule` blurs behind it). `alpha(…)` is GTK's
+      # own colour function, so the see-through surfaces still come from the
+      # look instead of a second hex literal drifting beside it.
+      xdg.configFile."wofi/style.css".text = ''
+        window {
+          font-family: "JetBrainsMono Nerd Font", monospace;
+          font-size: 13px;
+          background-color: alpha(${palette.bg}, 0.82);
+          border: 2px solid ${palette.primary};
+          border-radius: ${frameRadius}px;
+          color: ${palette.fg};
+        }
 
-      #input:focus {
-        outline: none;
-        box-shadow: none;
-      }
+        #input {
+          margin: 10px;
+          padding: 8px 12px;
+          border: none;
+          border-radius: ${rowRadius}px;
+          background-color: alpha(${palette.overlay}, 0.55);
+          color: ${palette.fg};
+        }
 
-      #inner-box, #outer-box, #scroll {
-        background-color: transparent;
-        border: none;
-      }
+        #input:focus {
+          outline: none;
+          box-shadow: none;
+        }
 
-      #inner-box { margin: 4px 10px 10px 10px; }
+        #inner-box, #outer-box, #scroll {
+          background-color: transparent;
+          border: none;
+        }
 
-      #entry {
-        padding: 6px 10px;
-        border-radius: 10px;
-      }
+        #inner-box { margin: 4px 10px 10px 10px; }
 
-      /* The palette draws its group headers as plain rows starting with "──";
-         they are selectable but do nothing, so they get no highlight. */
-      #entry:selected {
-        background-color: #7aa2f7;
-        color: #1a1b26;
-      }
+        #entry {
+          padding: 6px 10px;
+          border-radius: ${rowRadius}px;
+        }
 
-      #text:selected { color: #1a1b26; }
-    '';
-  };
+        /* The palette draws its group headers as plain rows starting with "──";
+           they are selectable but do nothing, so they get no highlight. */
+        #entry:selected {
+          background-color: ${palette.primary};
+          color: ${palette.bg};
+        }
+
+        #text:selected { color: ${palette.bg}; }
+      '';
+    };
 }

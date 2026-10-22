@@ -11,7 +11,12 @@
 # an unplayable file.
 {
   flake.modules.homeManager.record =
-    { pkgs, lib, ... }:
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
     let
       hypr-rec = pkgs.writeShellScriptBin "hypr-rec" ''
         set -eu
@@ -152,11 +157,11 @@
         /* Invisible whenever hypr-rec prints nothing — waybar hides a custom
            module with empty text, padding and margin included. */
         #custom-rec {
-          color: #1a1b26;
-          background: #f7768e;
+          color: ${config.look.palette.bg};
+          background: ${config.look.palette.alarm};
           padding: 0 12px;
           margin: 4px 4px;
-          border-radius: 8px;
+          border-radius: ${toString (config.look.rounding - 2)}px;
           font-weight: bold;
         }
       '';

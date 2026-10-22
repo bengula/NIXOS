@@ -23,6 +23,10 @@
 # the skip buttons, hovering the volume icon reveals a slider. When nothing
 # is playing, waybar's mpris module hides itself and the pill shrinks to just
 # volume and weather.
+#
+# Colours are this user's look; the pill is painted a touch darker than the
+# bar (`bgFloat`) so it reads as a thing lying on top of the desktop rather
+# than a second strip of the bar.
 {
   # playerctld tracks which player was last active, so "next" means the thing
   # you are actually listening to. Without it `playerctl` acts on whichever
@@ -33,8 +37,15 @@
   };
 
   flake.modules.homeManager.dynamic-island =
-    { pkgs, lib, ... }:
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
     let
+      palette = config.look.palette;
+
       # "playerctld,%any": prefer the daemon's view of the active player,
       # but still work if it is not running.
       playerctl = "${pkgs.playerctl}/bin/playerctl --player playerctld,%any";
@@ -76,7 +87,7 @@
         fi
 
         if [ ! -s "$cache" ]; then
-          printf '%s\n' '{"text":"<span color=\"#565f89\">󰖐</span>  --","tooltip":"Weather unavailable","class":"offline"}'
+          printf '%s\n' '{"text":"<span color=\"${palette.muted}\">󰖐</span>  --","tooltip":"Weather unavailable","class":"offline"}'
           exit 0
         fi
 
@@ -101,7 +112,7 @@
           def day: ($hour >= 6 and $hour < 19);
           .current_condition[0] as $c
           | (.nearest_area[0].areaName[0].value // "here") as $where
-          | { text: ("<span color=\"#7dcfff\">" + icon($c.weatherCode; day) + "</span>  " + $c.temp_C + "°"),
+          | { text: ("<span color=\"${palette.info}\">" + icon($c.weatherCode; day) + "</span>  " + $c.temp_C + "°"),
               alt: $c.weatherDesc[0].value,
               class: "weather",
               tooltip: ( "<b>" + $where + "</b>   " + ($c.weatherDesc[0].value | ltrimstr(" ") | rtrimstr(" ")) + "\n"
@@ -242,8 +253,8 @@
         };
 
         pulseaudio = {
-          format = "<span color=\"#7aa2f7\">{icon}</span>  {volume}%";
-          format-muted = "<span color=\"#565f89\">󰝟</span>  off";
+          format = "<span color=\"${palette.primary}\">{icon}</span>  {volume}%";
+          format-muted = "<span color=\"${palette.muted}\">󰝟</span>  off";
           format-icons = {
             default = [
               "󰕿"
@@ -306,17 +317,17 @@
         }
 
         window#waybar.island .modules-center {
-          background: rgba(16, 17, 27, 0.88);
-          border: 1px solid rgba(122, 162, 247, 0.18);
+          background: alpha(${palette.bgFloat}, 0.88);
+          border: 1px solid alpha(${palette.primary}, 0.18);
           border-radius: 15px;
           padding: 0 2px;
-          color: #c0caf5;
+          color: ${palette.fg};
           transition: border-color 250ms ease, background 250ms ease;
         }
 
         window#waybar.island .modules-center:hover {
-          border-color: rgba(122, 162, 247, 0.45);
-          background: rgba(16, 17, 27, 0.94);
+          border-color: alpha(${palette.primary}, 0.45);
+          background: alpha(${palette.bgFloat}, 0.94);
         }
 
         window#waybar.island #mpris,
@@ -324,41 +335,41 @@
         window#waybar.island #idle_inhibitor,
         window#waybar.island #custom-weather {
           padding: 0 10px;
-          color: #c0caf5;
+          color: ${palette.fg};
         }
 
         window#waybar.island #mpris.paused,
         window#waybar.island #mpris.stopped {
-          color: #565f89;
+          color: ${palette.muted};
         }
 
         window#waybar.island #pulseaudio.muted {
-          color: #565f89;
+          color: ${palette.muted};
         }
 
         /* Hairlines between the segments. */
         window#waybar.island #pulseaudio,
         window#waybar.island #idle_inhibitor,
         window#waybar.island #custom-weather {
-          border-left: 1px solid rgba(192, 202, 245, 0.12);
+          border-left: 1px solid alpha(${palette.fg}, 0.12);
         }
 
-        /* Amber while it is holding the inhibit — the same colour the main
-           bar uses for its submap indicator, i.e. "a mode is on". Dim when
-           it is not, so the island reads as idle at a glance. */
+        /* The attention colour while it is holding the inhibit — the same
+           one the main bar uses for its submap indicator, i.e. "a mode is
+           on". Dim when it is not, so the island reads as idle at a glance. */
         window#waybar.island #idle_inhibitor.activated {
-          color: #e0af68;
+          color: ${palette.attention};
         }
 
         window#waybar.island #idle_inhibitor.deactivated {
-          color: #565f89;
+          color: ${palette.muted};
         }
 
         /* Revealed on hover: play/pause between the two skip buttons. */
         window#waybar.island #custom-prev,
         window#waybar.island #custom-playpause,
         window#waybar.island #custom-next {
-          color: #7aa2f7;
+          color: ${palette.primary};
           padding: 0 7px;
           margin: 4px 1px;
           border-radius: 11px;
@@ -366,15 +377,15 @@
         }
 
         window#waybar.island #custom-playpause {
-          color: #bb9af7;
+          color: ${palette.secondary};
           padding: 0 8px;
         }
 
         window#waybar.island #custom-prev:hover,
         window#waybar.island #custom-playpause:hover,
         window#waybar.island #custom-next:hover {
-          background: rgba(122, 162, 247, 0.22);
-          color: #c0caf5;
+          background: alpha(${palette.primary}, 0.22);
+          color: ${palette.fg};
         }
 
         /* Revealed on hover: the volume slider. */
@@ -386,13 +397,13 @@
           min-width: 64px;
           min-height: 6px;
           border-radius: 3px;
-          background: rgba(192, 202, 245, 0.20);
+          background: alpha(${palette.fg}, 0.20);
         }
 
         window#waybar.island #pulseaudio-slider highlight {
           min-height: 6px;
           border-radius: 3px;
-          background: #7aa2f7;
+          background: ${palette.primary};
         }
 
         window#waybar.island #pulseaudio-slider slider {
@@ -404,13 +415,13 @@
         /* Tooltips are their own windows and cannot be scoped to one bar, so
            this styles the main bar's tooltips to match as well. */
         tooltip {
-          background: rgba(16, 17, 27, 0.96);
-          border: 1px solid rgba(122, 162, 247, 0.35);
+          background: alpha(${palette.bgFloat}, 0.96);
+          border: 1px solid alpha(${palette.primary}, 0.35);
           border-radius: 12px;
         }
 
         tooltip label {
-          color: #c0caf5;
+          color: ${palette.fg};
           padding: 4px;
         }
       '';

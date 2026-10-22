@@ -7,8 +7,14 @@
 # and a real slider, and two readouts of the same number was just noise.
 {
   flake.modules.homeManager.waybar =
-    { pkgs, ... }:
+    { pkgs, config, ... }:
     let
+      palette = config.look.palette;
+
+      # The pills sit inside the bar, so they round a little tighter than the
+      # windows do — one number, from ../looks/.
+      pillRadius = toString (config.look.rounding - 2);
+
       # Switching wifi from the bar. nmcli needs no sudo here because the user
       # is in the `networkmanager` group (see ./users.nix) — the only password
       # asked for is the network's own.
@@ -176,7 +182,9 @@
           tray.spacing = 8;
         };
 
-        # Translucent to match the terminal; Hyprland's layerrule blurs behind it.
+        # Translucent to match the terminal; Hyprland's layerrule blurs behind
+        # it. Colours come from this user's look, translucency from GTK's own
+        # `alpha(…)` so there is no second copy of a hex to keep in step.
         style = ''
           * {
             font-family: "JetBrainsMono Nerd Font", sans-serif;
@@ -187,70 +195,70 @@
           }
 
           window#waybar {
-            background: rgba(26, 27, 38, 0.72);
-            color: #c0caf5;
+            background: alpha(${palette.bg}, 0.72);
+            color: ${palette.fg};
           }
 
           #workspaces button {
             padding: 0 10px;
-            color: #565f89;
+            color: ${palette.muted};
             background: transparent;
           }
 
           #workspaces button.active {
-            color: #1a1b26;
-            background: #7aa2f7;
-            border-radius: 8px;
+            color: ${palette.bg};
+            background: ${palette.primary};
+            border-radius: ${pillRadius}px;
           }
 
           #workspaces button:hover {
-            background: rgba(122, 162, 247, 0.25);
-            border-radius: 8px;
+            background: alpha(${palette.primary}, 0.25);
+            border-radius: ${pillRadius}px;
           }
 
           #submap {
-            color: #1a1b26;
-            background: #e0af68;
+            color: ${palette.bg};
+            background: ${palette.attention};
             padding: 0 12px;
             margin: 4px 6px;
-            border-radius: 8px;
+            border-radius: ${pillRadius}px;
           }
 
           #window {
-            color: #a9b1d6;
+            color: ${palette.fgSoft};
             padding: 0 8px;
           }
 
           #clock {
-            color: #c0caf5;
+            color: ${palette.fg};
             font-weight: bold;
           }
 
           #custom-keys {
-            color: #1a1b26;
-            background: rgba(187, 154, 247, 0.9);
+            color: ${palette.bg};
+            background: alpha(${palette.secondary}, 0.9);
             padding: 0 12px;
             margin: 4px 4px;
-            border-radius: 8px;
+            border-radius: ${pillRadius}px;
           }
 
           #custom-keys:hover {
-            background: #bb9af7;
+            background: ${palette.secondary};
           }
 
           #network,
           #battery,
           #tray {
             padding: 0 10px;
-            color: #c0caf5;
+            color: ${palette.fg};
           }
 
           #battery.warning {
-            color: #e0af68;
+            color: ${palette.attention};
           }
 
           #battery.critical {
-            color: #f7768e;
+            color: ${palette.alarm};
           }
         '';
       };

@@ -25,9 +25,10 @@ in
     };
 
   flake.modules.homeManager.wallpaper =
-    { pkgs, ... }:
+    { pkgs, config, ... }:
     let
       orbit = mkOrbit pkgs;
+      palette = config.look.palette;
 
       # `%C` and not `%h/.cache`: for a user manager systemd resolves %C through
       # $XDG_CACHE_HOME, which is what the client scripts below and in ./lock.nix
@@ -99,13 +100,16 @@ in
             "ORBIT_WALLPAPER_INTRO_DURATION=4.5"
             "ORBIT_WALLPAPER_EXIT_DURATION=1.0"
 
-            # Tokyo Night, matching the terminal and the window borders.
-            # (These happen to be Orbit's own defaults too.)
-            "ORBIT_WALLPAPER_PRIMARY=#7AA2F7"
-            "ORBIT_WALLPAPER_SECONDARY=#BB9AF7"
-            "ORBIT_WALLPAPER_SURFACE=#24283B"
-            "ORBIT_WALLPAPER_ERROR=#F7768E"
-            "ORBIT_WALLPAPER_PALETTE_STRENGTH=0.72"
+            # The same colours as the terminal and the window borders — the
+            # wave shader tints itself from these, so the wallpaper is where
+            # the look is most visible. How hard it is pulled towards them is
+            # the look's call too: Orbit's 0.72 default is tuned for Tokyo
+            # Night's own hues.
+            "ORBIT_WALLPAPER_PRIMARY=${palette.primary}"
+            "ORBIT_WALLPAPER_SECONDARY=${palette.secondary}"
+            "ORBIT_WALLPAPER_SURFACE=${palette.surface}"
+            "ORBIT_WALLPAPER_ERROR=${palette.alarm}"
+            "ORBIT_WALLPAPER_PALETTE_STRENGTH=${config.look.wallpaperStrength}"
           ];
 
           Restart = "on-failure";

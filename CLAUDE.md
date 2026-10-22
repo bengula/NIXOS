@@ -58,6 +58,9 @@ of. Adding a new aspect requires both dropping the file in `modules/` *and*
 adding its name to the list in `hosts.nix`.
 
 Non-module code lives alongside `modules/`:
+- `flakes/looks/` — one file per look (`tokyonight.nix`, `blossom.nix`) plus
+  `syntax.nix`, as plain Nix data rather than aspects. See the note below
+  before putting a colour anywhere else.
 - `flakes/services/bengula-portal.nix` — a long-form NixOS module (options +
   systemd + nginx), kept out of `modules/` because of its size; published as
   an aspect by `modules/bengula-portal.nix`.
@@ -68,6 +71,31 @@ Non-module code lives alongside `modules/`:
   published as an aspect by `modules/hardware-erudite.nix`. Edit cautiously.
 
 ### Interlocking systems worth knowing before touching them
+
+- **Colours are per user and come from `flakes/looks/` only.** Nine aspects
+  paint something (kitty, waybar, the island, wofi, dunst, the Hyprland
+  borders, hyprlock, the recorder pill, the shader wallpaper) and all of them
+  are shared between users, so none of them may contain a colour: they read
+  `config.look` — a Home Manager option declared by `modules/look.nix` and
+  imported once via `home-base.nix`. A user picks a look in their own file
+  (`modules/home-lovelty.nix`: `look = import ../looks/blossom.nix { inherit
+  pkgs; }`); the default is `looks/tokyonight.nix`, which is what `bebe` gets.
+  A new hex literal anywhere under `modules/` is the bug —
+  `grep -rn '#[0-9a-f]\{6\}' flakes/modules` should stay empty.
+  - A look is read whole, not merged: `types.attrs` means a user's definition
+    *replaces* the default, so a look file missing an attribute fails with a
+    missing-attribute error. Keep `looks/blossom.nix` and
+    `looks/tokyonight.nix` attribute-for-attribute identical in shape.
+  - Roles, not hues: `palette.primary` is "the focus colour" (blue in one
+    look, pink in the other). `look.rounding` is the one corner radius every
+    surface derives from — windows and dunst take it, wofi's frame is +4 and
+    its rows take it, the bar's pills are -2.
+  - Three colour syntaxes are not interchangeable, which is what
+    `looks/syntax.nix` is for: GTK CSS takes `#rrggbb` and gets translucency
+    from GTK's own `alpha(#rrggbb, 0.72)` (never a second literal); Hyprland
+    and hyprlock take `rgba(rrggbbaa)` with no `#`, via `hypr color "cc"`;
+    Pango markup wants a bare `rrggbb` (`bare`), doubled to `##` inside
+    hyprlock's config.
 
 - **Hyprland keybindings** (`modules/hyprland-keys.nix`) are a single source
   list that generates three things at once — the searchable wofi palette

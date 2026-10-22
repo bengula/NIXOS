@@ -4,6 +4,10 @@
 # lock/unlock fade and the input field's reactions are configured here, not in
 # the compositor. Node names come from hyprlock's animation tree:
 # global → fade → { fadeIn, fadeOut } and global → inputField → inputFieldColors.
+#
+# Colours come from this user's look (../looks/). hyprlock's own config needs
+# a literal "#" written twice — it strips one — which is why the Pango spans
+# below say "##" where waybar's say "#".
 {
   flake.modules.homeManager.lock =
     {
@@ -13,6 +17,9 @@
       ...
     }:
     let
+      inherit (import ../looks/syntax.nix) bare hypr;
+      palette = config.look.palette;
+
       # Super + Escape runs this rather than hyprlock directly, so the shader
       # wallpaper can animate out behind the lock screen and sweep back in on
       # unlock. Every wallpaper signal is optional and time-bounded — with no
@@ -110,13 +117,13 @@
               dots_size = 0.24;
               dots_spacing = 0.32;
               dots_center = true;
-              outer_color = "rgba(7aa2f7cc)";
-              inner_color = "rgba(1a1b2699)";
-              font_color = "rgb(c0caf5)";
-              check_color = "rgba(e0af68cc)";
-              fail_color = "rgba(f7768ecc)";
-              placeholder_text = "<span foreground='##8a92b2'>Password…</span>";
-              fail_text = "<span foreground='##f7768e'>$FAIL ($ATTEMPTS)</span>";
+              outer_color = hypr palette.primary "cc";
+              inner_color = hypr palette.bg "99";
+              font_color = hypr palette.fg "ff";
+              check_color = hypr palette.attention "cc";
+              fail_color = hypr palette.alarm "cc";
+              placeholder_text = "<span foreground='##${bare palette.hint}'>Password…</span>";
+              fail_text = "<span foreground='##${bare palette.alarm}'>$FAIL ($ATTEMPTS)</span>";
               fade_on_empty = false;
               shadow_passes = 2;
               shadow_size = 6;
@@ -130,7 +137,7 @@
               text = "$TIME";
               font_family = "JetBrainsMono Nerd Font";
               font_size = 88;
-              color = "rgba(c0caf5ee)";
+              color = hypr palette.fg "ee";
               position = "0, 90";
               halign = "center";
               valign = "center";
@@ -143,7 +150,7 @@
               text = "cmd[update:60000] date +'%A, %d %B'";
               font_family = "JetBrainsMono Nerd Font";
               font_size = 18;
-              color = "rgba(a9b1d6cc)";
+              color = hypr palette.fgSoft "cc";
               position = "0, 20";
               halign = "center";
               valign = "center";
@@ -151,10 +158,12 @@
             # Who is logged in
             {
               monitor = "";
-              text = "$USER";
+              # The glyph is the look's — empty in Tokyo Night, a heart in
+              # blossom — so this is "$USER" unless a look asks for more.
+              text = "${config.look.lockGlyph}$USER";
               font_family = "JetBrainsMono Nerd Font";
               font_size = 14;
-              color = "rgba(7aa2f7cc)";
+              color = hypr palette.primary "cc";
               position = "0, -110";
               halign = "center";
               valign = "center";

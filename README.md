@@ -64,12 +64,18 @@ flakes/
 │   ├── wofi.nix                 launcher + palette styling
 │   ├── lock.nix                 hyprlock, hypridle, the lock/unlock wallpaper sequence
 │   ├── wallpaper.nix            ★ animated shader wallpaper (Orbit)
-│   ├── terminal.nix             ★ GNOME Terminal — translucent Tokyo Night profile
+│   ├── terminal.nix             ★ kitty — translucent, coloured from the look
+│   ├── theme.nix                GTK/Qt/icons/cursor/font for the toolkits
+│   ├── look.nix                 ★ declares `look` — one user, one appearance
 │   ├── dev.nix                  fish, starship, neovim, direnv, CLI tools
 │   ├── home-manager.nix         wires Home Manager into NixOS
 │   ├── home-base.nix            shared user defaults
 │   ├── home-bebe.nix            the `bebe` user
 │   └── home-lovelty.nix         the `lovelty` user
+├── looks/
+│   ├── tokyonight.nix           the default look (`bebe`)
+│   ├── blossom.nix              pink — `lovelty`'s look
+│   └── syntax.nix               the colour spellings Hyprland/Pango/GTK need
 ├── services/bengula-portal.nix  long-form NixOS module, published as an aspect
 ├── pkgs/
 │   ├── bengula-portal.nix       buildNpmPackage derivation

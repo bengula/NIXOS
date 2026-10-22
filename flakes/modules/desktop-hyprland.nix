@@ -1,5 +1,6 @@
 # The Hyprland compositor itself: system packages plus the look of the session.
-# Keybindings live in ./hyprland-keys.nix, the bar in ./waybar.nix.
+# Keybindings live in ./hyprland-keys.nix, the bar in ./waybar.nix, the
+# colours in ../looks/ (reached through `config.look`).
 {
   # ── System ─────────────────────────────────────────────────────────────────
   flake.modules.nixos.hyprland =
@@ -28,7 +29,11 @@
 
   # ── Session look & feel ────────────────────────────────────────────────────
   flake.modules.homeManager.hyprland =
-    { lib, ... }:
+    { lib, config, ... }:
+    let
+      inherit (import ../looks/syntax.nix) hypr;
+      palette = config.look.palette;
+    in
     {
       wayland.windowManager.hyprland = {
         enable = true;
@@ -69,7 +74,11 @@
         -- does not hide content.
         hl.monitor({ output = "", mode = "highres", position = "auto", scale = "auto" })
 
-        hl.env("XCURSOR_SIZE", "24")
+        -- The cursor size is the look's (./theme.nix sets the GTK/X11 side
+        -- from the same number), and Wayland clients that read the env var
+        -- rather than the cursor theme have to agree with it, or the pointer
+        -- changes size as the mouse crosses between them.
+        hl.env("XCURSOR_SIZE", "${toString config.look.cursor.size}")
         hl.env("QT_QPA_PLATFORM", "wayland")
 
         hl.config({
@@ -84,8 +93,8 @@
             gaps_out = 10,
             border_size = 2,
             col = {
-              active_border = { colors = { "rgba(7aa2f7ff)", "rgba(bb9af7ff)" }, angle = 45 },
-              inactive_border = "rgba(414868aa)",
+              active_border = { colors = { "${hypr palette.primary "ff"}", "${hypr palette.secondary "ff"}" }, angle = 45 },
+              inactive_border = "${hypr palette.overlay "aa"}",
             },
             layout = "dwindle",
           },
@@ -93,7 +102,9 @@
           -- Translucency lives or dies on the blur behind it — without this a
           -- see-through terminal is just an unreadable terminal.
           decoration = {
-            rounding = 10,
+            -- The look's one corner radius; the bar's pills and the
+            -- launcher's frame are derived from the same number.
+            rounding = ${toString config.look.rounding},
             blur = {
               enabled = true,
               size = 8,
@@ -108,7 +119,7 @@
               enabled = true,
               range = 18,
               render_power = 3,
-              color = "rgba(0d0e14aa)",
+              color = "${hypr palette.shadow "aa"}",
             },
           },
 
@@ -170,9 +181,9 @@
             height = 260;
             origin = "top-right";
             offset = "16x52";
-            corner_radius = 10;
+            corner_radius = config.look.rounding;
             frame_width = 2;
-            frame_color = "#7aa2f7";
+            frame_color = palette.primary;
             separator_color = "frame";
             font = "JetBrainsMono Nerd Font 10";
             markup = "full";
@@ -181,19 +192,19 @@
             horizontal_padding = 16;
           };
           urgency_low = {
-            background = "#1a1b26";
-            foreground = "#c0caf5";
+            background = palette.bg;
+            foreground = palette.fg;
             timeout = 5;
           };
           urgency_normal = {
-            background = "#1a1b26";
-            foreground = "#c0caf5";
+            background = palette.bg;
+            foreground = palette.fg;
             timeout = 8;
           };
           urgency_critical = {
-            background = "#1a1b26";
-            foreground = "#f7768e";
-            frame_color = "#f7768e";
+            background = palette.bg;
+            foreground = palette.alarm;
+            frame_color = palette.alarm;
             timeout = 0;
           };
         };
