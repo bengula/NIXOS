@@ -11,25 +11,7 @@ in
         homeManager.base
         homeManager.dev
         homeManager.terminal
-        homeManager.hyprland
-        homeManager.hyprland-keys
-        homeManager.wofi
-        homeManager.waybar
-        homeManager.dynamic-island
-        homeManager.lock
-        homeManager.wallpaper
-        homeManager.window-rules
-        homeManager.window-switcher
-        homeManager.clipboard
-        homeManager.record
-        homeManager.picker
-        homeManager.emoji
-        homeManager.zoom
-        homeManager.nightlight
-        homeManager.theme
-        homeManager.default-apps
-        homeManager.automount
-        homeManager.polkit
+        homeManager.desktop
       ];
 
       home.username = "bebe";

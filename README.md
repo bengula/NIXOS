@@ -69,7 +69,7 @@ flakes/
 │   ├── home-manager.nix         wires Home Manager into NixOS
 │   ├── home-base.nix            shared user defaults
 │   ├── home-bebe.nix            the `bebe` user
-│   └── home-pri.nix             the `pri` user
+│   └── home-lovelty.nix         the `lovelty` user
 ├── services/bengula-portal.nix  long-form NixOS module, published as an aspect
 ├── pkgs/
 │   ├── bengula-portal.nix       buildNpmPackage derivation

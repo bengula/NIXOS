@@ -140,7 +140,7 @@ Non-module code lives alongside `modules/`:
 ### Users
 
 `modules/home-manager.nix` wires Home Manager into NixOS and maps system
-users to Home Manager aspects (`modules/home-bebe.nix`, `modules/home-pri.nix`),
+users to Home Manager aspects (`modules/home-bebe.nix`, `modules/home-lovelty.nix`),
 which import a shared `modules/home-base.nix` plus whichever
 `homeManager.<aspect>` modules apply to that user.
 

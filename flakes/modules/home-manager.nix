@@ -20,7 +20,7 @@ in
       backupFileExtension = "hm-bak";
 
       users.bebe.imports = [ homeManager.bebe ];
-      users.pri.imports = [ homeManager.pri ];
+      users.lovelty.imports = [ homeManager.lovelty ];
     };
   };
 }

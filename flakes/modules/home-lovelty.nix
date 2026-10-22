@@ -4,16 +4,17 @@ let
   inherit (config.flake.modules) homeManager;
 in
 {
-  flake.modules.homeManager.pri =
+  flake.modules.homeManager.lovelty =
     { pkgs, ... }:
     {
       imports = [
         homeManager.base
         homeManager.terminal
+        homeManager.desktop
       ];
 
-      home.username = "pri";
-      home.homeDirectory = "/home/pri";
+      home.username = "lovelty";
+      home.homeDirectory = "/home/lovelty";
 
       home.packages = with pkgs; [
         thunderbird
