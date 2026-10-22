@@ -90,6 +90,14 @@
 
           "inode/directory" = files;
 
+          # The budget files in ~/Documents/budget. HomeBank's own desktop
+          # file already claims this type, so it worked without mimeapps.list
+          # — it is named here because the hand-written file had
+          # `application/x-trash=homebank.desktop` instead, which is a
+          # different type that nothing on this machine produces. Verified
+          # with `xdg-mime query filetype Documents/budget/bengula.xhb`.
+          "application/x-homebank" = [ "homebank.desktop" ];
+
           # ── App URL schemes ─────────────────────────────────────────────
           # These are the ones that have to survive this file being generated:
           # a missing handler here means a link that silently does nothing.
@@ -112,7 +120,6 @@
           ];
           "text/plain" = [ "codium.desktop" ];
           "text/x-tex" = [ "codium.desktop" ];
-          "application/x-trash" = [ "homebank.desktop" ];
           "application/pdf" = browser;
         };
       };
