@@ -17,8 +17,10 @@
       # a leftover from BlueZ 4's audio.conf and does nothing in main.conf.
     };
 
-    # Blueman gives D-Bus integration and Polkit permissions — needed for
-    # non-root users in the 'bluetooth' group.
+    # Blueman gives D-Bus integration and the polkit policy that lets a
+    # non-root user manage adapters. That grant is to whoever holds the active
+    # local session — there is no 'bluetooth' group in NixOS to be a member of
+    # (users.nix has the longer note), so this line is the whole mechanism.
     services.blueman.enable = true;
   };
 }

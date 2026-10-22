@@ -2,6 +2,21 @@
   flake.modules.nixos.users =
     { pkgs, ... }:
     {
+      # Both users listed "adbusers" and "bluetooth" here for a long time and
+      # neither ever applied — no such group exists on this system, so NixOS
+      # silently dropped them and `id` never showed them. Do not add them back:
+      #
+      #   adbusers  — gone from NixOS. `programs.adb` is a mkRemovedOptionModule
+      #               now ("no longer needed as systemd 258 handles uaccess
+      #               rules automatically"); setting it is a build error. This
+      #               machine runs systemd 261, and adb reaches a plugged-in
+      #               device off `android-tools` in packages.nix alone.
+      #   bluetooth — never existed in NixOS at all; nothing declares it.
+      #               Managing adapters is a polkit grant to the active local
+      #               session, which is what services.blueman.enable in
+      #               bluetooth.nix provides.
+      #
+      # So the fix for "user X cannot reach bluetooth/adb" is never a group.
       users.users.lovelty = {
         isNormalUser = true;
         description = "Princess";
@@ -17,8 +32,6 @@
           "wheel"
           "networkmanager"
           "video"
-          "adbusers"
-          "bluetooth"
         ];
       };
 
@@ -30,8 +43,6 @@
           "wheel"
           "networkmanager"
           "video"
-          "adbusers"
-          "bluetooth"
         ];
       };
     };
